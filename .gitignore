@@ -18,3 +18,7 @@ venv/
 *.o
 *.old
 *.otl
+
+# 2025-02-19, more items: 
+AVRDUDE-v8.0/
+*.ps1
