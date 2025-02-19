@@ -31,6 +31,12 @@ eval "$( bin/detect-mcu.sh "$TARGET" )"
 # detect and enable a relevant Atmel DFP
 if [[ $MCUNAME =~ "attiny" ]]; then
   DFPPATH=$BASEDIR/arch/dfp/attiny
+
+  # 2025/02/19 :
+  echo "    "
+  echo "  DFPPATH = $DFPPATH"
+  echo "    "
+
 elif [[ $MCUNAME =~ "avr" && $MCUNAME =~ "dd" ]]; then
   DFPPATH=$BASEDIR/arch/dfp/avrdd
 else
