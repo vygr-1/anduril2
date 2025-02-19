@@ -72,7 +72,6 @@ uint8_t battcheck_state(Event event, uint16_t arg) {
 
 
 
-
     #ifdef DEFAULT_BLINK_CHANNEL
     // 3 clicks: next channel mode (specific to number blinky modes)
     else if (event == EV_3clicks) {
