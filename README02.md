@@ -1,25 +1,29 @@
+.   
+.   
+.   
+
+Create README02.md
+---
+
+README02.md  
+
+This is a secondary README file, contains info on the mods of this specific branch, a2-105.  
+There's some chaos, I'm still learning/playing with this Git, GitHub, GitHub Desktop, puppygit thingy ...  
 
 .   
 .   
 .   
 
-## Create README02.md
+Edit README02.md  
+---
 
-2025-02-19 
-
-README02.md.  
-
-This is a secondary README file, contains info on the mods of this specific branch.
-now it's empty though, kinda a placeholder, I'm still learning/playing with this Git, GitHub, GitHub Desktop thingy ...  
-
-.   
-.   
-.   
-
-2025-02-16   
+2025-02-19   
 
 OK, let's get it going...   
-This specific branch is anduril2 with many mods. 
+This specific branch is anduril2 with some mods.  
+a2-105, not as heavy-mods as the a2-325?   
+
+Heavy It may be, but has the same file structure as the OG [ToyKeeper Anduril2](https://github.com/ToyKeeper/anduril)  
 
 .   
 .   
@@ -28,8 +32,27 @@ This specific branch is anduril2 with many mods.
 .   
 .   
 .   
+
+.   
+.   
+.   
+
+
+This is a rough outline / plan, the actual features implemented are TBD   
+---
+
+
 
 # CUSTOM FEATURES   
+
+
+- disable momentary mode   
+- disable POVD   
+- disable extra digit for the battcheck-mode:   
+    4.1 Volt , not 4.18 Volt 
+- disable Simple UI   
+- disable SOS mode   
+
 
 
 ## ver-check-mode
@@ -47,13 +70,10 @@ This specific branch is anduril2 with many mods.
  - Extra files in the **anduril** directory:  
    **ver-check-mode.c** and **ver-check-mode.h**, which are basically copies of the OG version-check-mode files, with some mods.
 
-
 .   
-.   
-.   
-
 
 ##   Button clicks for blinky group
+
 
 OFF, **5C**: activate **battcheck-mode** (OG is 3C)   
 
@@ -196,7 +216,7 @@ Checks checks
 
 2025/02/19 12:23
 
-
+2025/02/19 16:42
 
 
 
