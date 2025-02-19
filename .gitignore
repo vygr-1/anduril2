@@ -36,6 +36,7 @@ bin-mod/
 dfp/
 hw-mods/
 hw-mod/
+*--/
 xtras--/
 *.ps1
 
