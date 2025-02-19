@@ -33,7 +33,7 @@ Heavy It may be, but it has the same file structure as the OG [ToyKeeper Anduril
 .   
 .   
 
-Edited Files :
+Mod / New Files :
 ---
 
 -  bin/build.sh 
@@ -42,6 +42,20 @@ Edited Files :
 
 
 -  ui/anduril/anduril.c 
+-  ui/anduril/aux-leds.c 
+
+.   
+
+Supporting VER_CHECK_MODE : 
+-  ui/anduril/battcheck-mode.c 
+-  ui/anduril/beacon-mode.c  
+
+.  
+
+-  ui/anduril/candle-mode.c  
+    * using starryalley's candle-mode.c , has more adjustments 
+
+
 -  
 
 
