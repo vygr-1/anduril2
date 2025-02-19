@@ -2,34 +2,77 @@
 // Copyright (C) 2017-2023 Selene ToyKeeper
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+
+///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
+
+
 #pragma once
+
 
 #include "anduril/tempcheck-mode.h"
 
+
+///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
+
+
+
+
 uint8_t tempcheck_state(Event event, uint16_t arg) {
+
+
     // 1 click: off
     if (event == EV_1click) {
         set_state(off_state, 0);
         return EVENT_HANDLED;
     }
+
+
+
     // 2 clicks: next blinky mode
     else if (event == EV_2clicks) {
-        #if defined(USE_BEACON_MODE)
+
+
+
+        /*  ///  VER_CHECK_MODE
+        ///  tested on the SC31 Pro t1616 
+        ///  mod in the "sofirn/sc31-pro-t1616/anduril.h" :  
+              #define USE_VER_CHECK_MODE
+         */
+        #elif defined(USE_VER_CHECK_MODE)
+        set_state(ver_check_state, 0);   ///   ///   ///   ///   ///
+
+
+
+        #elif defined(USE_BEACON_MODE)
         set_state(beacon_state, 0);
+
         #elif defined(USE_SOS_MODE) && defined(USE_SOS_MODE_IN_BLINKY_GROUP)
         set_state(sos_state, 0);
+
         #elif defined(USE_BATTCHECK)
         set_state(battcheck_state, 0);
+
+
         #endif
+
         return EVENT_HANDLED;
+
     }
+
+
+
     // 7H: thermal config mode
     else if (event == EV_click7_hold) {
         push_state(thermal_config_state, 0);
         return EVENT_HANDLED;
     }
+
+
     return EVENT_NOT_HANDLED;
+
 }
+
+
 
 void thermal_config_save(uint8_t step, uint8_t value) {
     if (value) {
@@ -49,8 +92,18 @@ void thermal_config_save(uint8_t step, uint8_t value) {
     if (cfg.therm_ceil > MAX_THERM_CEIL) cfg.therm_ceil = MAX_THERM_CEIL;
 }
 
+
+
 uint8_t thermal_config_state(Event event, uint16_t arg) {
     return config_state_base(event, arg,
                              2, thermal_config_save);
 }
+
+
+
+
+
+
+///   END   
+
 
