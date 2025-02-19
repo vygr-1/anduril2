@@ -45,7 +45,6 @@ else
 fi
 
 
-
 # skip verification because newer avr-libc doesn't need DFPs,
 # so the DFP shouldn't be mandatory
 ## ensure the DFP files exist
@@ -54,7 +53,6 @@ fi
 #  echo "Install DFP files with './make dfp'"
 #  exit 1
 #fi
-
 
 
 export CC=avr-gcc
@@ -88,6 +86,10 @@ run "$OBJCOPY" "$OBJCOPYFLAGS" "$PROGRAM.elf" "$PROGRAM.hex"
 run avr-objdump -Pmem-usage "$PROGRAM".elf | grep -E 'Full|Device' | sed 's/^/  /;'
 
 
+
+
+
+###   ###   ###   ###   ###   ###   ###   ###   ###
 
 
 

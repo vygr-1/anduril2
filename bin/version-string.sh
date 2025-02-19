@@ -6,6 +6,8 @@
 # Usage: version-string.sh [c|git|both]
 # Prints in C or Git format.  Defaults to both.
 
+
+
 function main {
     # eat first arg if invoked via 'make'
     [[ "version" = "$1" ]] && shift
@@ -34,6 +36,10 @@ function git-describe {
     git describe --tags --dirty --match='r2*'
 }
 
+
+
+
+
 function c-version-string {
     # version = git tag + revs since + dirty flag
     REV=$(git-describe)
@@ -45,14 +51,43 @@ function c-version-string {
                 s/^([0-9]{4}-[0-9]{2}-[0-9]{2})-/\1+/;
                 '
         )
+
+
+
+    REVDATE=$( date -d '7 hours' '+%y.%m.%d..%H.%M' )  
+
     # handle an empty name (can happen during github action runs)
     if [[ -z "$REV" ]]; then
+
         HASH=$(git describe --always)
-        REV="0.$HASH"
+        ##  OG:  REV="0.$HASH"
+        
+        ###  mod:  
+        REV=$REVDATE
+
     fi
+
+
+
     # print the version string
     echo "$REV"
+
 }
 
+
+
 main "$@"
+
+
+
+
+
+###   ###   ###   ###   ###   ###   ###   ###   ###
+###   ###   ###   ###   ###   ###   ###   ###   ###
+###   ###   ###   ###   ###   ###   ###   ###   ###
+
+
+
+###   END   
+
 
