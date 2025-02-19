@@ -14,7 +14,7 @@ There's some chaos, I'm still learning/playing with this Git, GitHub, GitHub Des
 .   
 .   
 
-Edit README02.md  
+Edit README--a2-105.md  
 ---
 
 2025-02-19   
@@ -23,7 +23,7 @@ OK, let's get it going...
 This specific branch is anduril2 with some mods.  
 a2-105, not as heavy-mods as the a2-325?   
 
-Heavy It may be, but has the same file structure as the OG [ToyKeeper Anduril2](https://github.com/ToyKeeper/anduril)  
+Heavy It may be, but it has the same file structure as the OG [ToyKeeper Anduril2](https://github.com/ToyKeeper/anduril). 
 
 .   
 .   
