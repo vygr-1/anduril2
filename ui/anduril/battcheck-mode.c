@@ -1,11 +1,25 @@
 // battcheck-mode.c: Battery check mode for Anduril.
 // Copyright (C) 2017-2023 Selene ToyKeeper
 // SPDX-License-Identifier: GPL-3.0-or-later
+
+
+///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
+
+
 #pragma once
+
 
 #include "anduril/battcheck-mode.h"
 
+
+///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
+
+
+
+
 uint8_t battcheck_state(Event event, uint16_t arg) {
+
+
     ////////// Every action below here is blocked in the simple UI //////////
     #ifdef USE_SIMPLE_UI
     if (cfg.simple_ui_active) {
@@ -13,23 +27,51 @@ uint8_t battcheck_state(Event event, uint16_t arg) {
     }
     #endif
 
+
     // 1 click: off
     if (event == EV_1click) {
         set_state(off_state, 0);
         return EVENT_HANDLED;
     }
 
+
+
+
+
     // 2 clicks: next blinky mode
     else if (event == EV_2clicks) {
+
         #if defined(USE_THERMAL_REGULATION)
         set_state(tempcheck_state, 0);
+
+
+
+        /*  ///  VER_CHECK_MODE
+        ///  tested on the SC31 Pro t1616 
+        ///  line in the "sofirn/sc31-pro-t1616/anduril.h" :  
+              #define USE_VER_CHECK_MODE
+         */
+        #elif defined(USE_VER_CHECK_MODE)
+        set_state(ver_check_state, 0);   ///   ///   ///   ///   ///
+
+
+
         #elif defined(USE_BEACON_MODE)
         set_state(beacon_state, 0);
+
         #elif defined(USE_SOS_MODE) && defined(USE_SOS_MODE_IN_BLINKY_GROUP)
         set_state(sos_state, 0);
+
         #endif
+
         return EVENT_HANDLED;
+
     }
+
+
+
+
+
 
     #ifdef DEFAULT_BLINK_CHANNEL
     // 3 clicks: next channel mode (specific to number blinky modes)
@@ -51,7 +93,11 @@ uint8_t battcheck_state(Event event, uint16_t arg) {
     return EVENT_NOT_HANDLED;
 }
 
+
+
+
 #ifdef USE_VOLTAGE_CORRECTION
+
 // the user can adjust the battery measurements... on a scale of 1 to 13
 // 1 = subtract 0.30V
 // 2 = subtract 0.25V
@@ -60,6 +106,7 @@ uint8_t battcheck_state(Event event, uint16_t arg) {
 // 8 = add 0.05V
 // ...
 // 13 = add 0.30V
+
 void voltage_config_save(uint8_t step, uint8_t value) {
     #ifdef USE_POST_OFF_VOLTAGE
         if (2 == step) cfg.post_off_voltage = value;
@@ -67,6 +114,9 @@ void voltage_config_save(uint8_t step, uint8_t value) {
     #endif
     if (value) cfg.voltage_correction = value;
 }
+
+
+
 
 uint8_t voltage_config_state(Event event, uint16_t arg) {
     #ifdef USE_POST_OFF_VOLTAGE
@@ -78,5 +128,14 @@ uint8_t voltage_config_state(Event event, uint16_t arg) {
                              VOLTAGE_CONFIG_STEPS,
                              voltage_config_save);
 }
+
+
 #endif  // #ifdef USE_VOLTAGE_CORRECTION
+
+
+
+
+
+///   END   
+
 
