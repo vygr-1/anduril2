@@ -2,6 +2,19 @@
 // Copyright (C) 2017-2023 Selene ToyKeeper
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+
+
+///  **lockout-mode.c** 
+///  Mod: supporting more aux patterns by SammysHP . 
+///  2025-01-19 16:17  mod: disable  4H and 5C in lockout-mode.   
+      ///  3C and 4C same as stock. 
+
+
+
+///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
+
+
+
 #pragma once
 
 #include "anduril/lockout-mode.h"
@@ -43,7 +56,7 @@ uint8_t lockout_state(Event event, uint16_t arg) {
         ticks_since_on = 0;
         #ifdef USE_INDICATOR_LED
             // redundant, sleep tick does the same thing
-            // indicator_led_update(cfg.indicator_led_mode >> 2, 0);
+            // indicator_led_update(cfg.indicator_led_mode >> INDICATOR_LED_CFG_OFFSET, 0);
         #elif defined(USE_AUX_RGB_LEDS)
             rgb_led_update(cfg.rgb_led_lockout_mode, 0);
         #endif
@@ -54,7 +67,7 @@ uint8_t lockout_state(Event event, uint16_t arg) {
             go_to_standby = 1;
             #ifdef USE_INDICATOR_LED
             // redundant, sleep tick does the same thing
-            //indicator_led_update(cfg.indicator_led_mode >> 2, arg);
+            //indicator_led_update(cfg.indicator_led_mode >> INDICATOR_LED_CFG_OFFSET, arg);
             #elif defined(USE_AUX_RGB_LEDS)
             rgb_led_update(cfg.rgb_led_lockout_mode, arg);
             #endif
@@ -73,7 +86,7 @@ uint8_t lockout_state(Event event, uint16_t arg) {
         }
         #endif  // ifdef USE_MANUAL_MEMORY_TIMER
         #if defined(USE_INDICATOR_LED)
-        indicator_led_update(cfg.indicator_led_mode >> 2, arg);
+        indicator_led_update(cfg.indicator_led_mode >> INDICATOR_LED_CFG_OFFSET, arg);
         #elif defined(USE_AUX_RGB_LEDS)
         rgb_led_update(cfg.rgb_led_lockout_mode, arg);
         #endif
@@ -81,6 +94,9 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     }
     #endif
 
+
+
+    ///  3C 
     // 3 clicks: exit and turn off
     else if (event == EV_3clicks) {
         blink_once();
@@ -88,6 +104,9 @@ uint8_t lockout_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
+
+
+    ///  4C 
     // 4 clicks: exit and turn on
     else if (event == EV_4clicks) {
         #if defined(USE_MANUAL_MEMORY) && !defined(USE_MANUAL_MEMORY_TIMER)
@@ -101,6 +120,13 @@ uint8_t lockout_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
+
+
+
+
+/// 2025/01/19 16:17   
+/// Mod. : disable LOCKOUT-MODE's 4H and 5C   
+/*
     // 4 clicks, but hold last: exit and start at floor
     else if (event == EV_click4_hold) {
         //blink_once();
@@ -117,6 +143,11 @@ uint8_t lockout_state(Event event, uint16_t arg) {
         set_state(steady_state, MAX_LEVEL);
         return EVENT_HANDLED;
     }
+ */
+
+
+
+
 
     #if NUM_CHANNEL_MODES > 1
     // 3H: next channel mode
@@ -127,6 +158,12 @@ uint8_t lockout_state(Event event, uint16_t arg) {
         }
     }
     #endif
+
+
+
+
+
+
 
     ////////// Every action below here is blocked in the (non-Extended) Simple UI //////////
 
@@ -139,21 +176,14 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     #if defined(USE_INDICATOR_LED)
     // 7 clicks: rotate through indicator LED modes (lockout mode)
     else if (event == EV_7clicks) {
-        #if defined(USE_INDICATOR_LED)
-            uint8_t mode = cfg.indicator_led_mode >> 2;
-            #ifdef TICK_DURING_STANDBY
-            mode = (mode + 1) & 3;
-            #else
-            mode = (mode + 1) % 3;
-            #endif
-            #ifdef INDICATOR_LED_SKIP_LOW
-            if (mode == 1) { mode ++; }
-            #endif
-            cfg.indicator_led_mode = (mode << 2) + (cfg.indicator_led_mode & 0x03);
-            // redundant, sleep tick does the same thing
-            //indicator_led_update(cfg.indicator_led_mode >> 2, arg);
-        #elif defined(USE_AUX_RGB_LEDS)
+        uint8_t mode = (cfg.indicator_led_mode >> INDICATOR_LED_CFG_OFFSET) + 1;
+        mode = mode % INDICATOR_LED_NUM_PATTERNS;
+        #ifdef INDICATOR_LED_SKIP_LOW
+        if (mode == 1) { mode ++; }
         #endif
+        cfg.indicator_led_mode =
+            (mode << INDICATOR_LED_CFG_OFFSET) +
+            (cfg.indicator_led_mode & INDICATOR_LED_CFG_MASK);
         save_config();
         return EVENT_HANDLED;
     }
@@ -188,12 +218,20 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     }
     #endif
 
+
+
+
+
+/// AUTOLOCK has a flag  "#ifdef USE_AUTOLOCK"  
+/// easy to  #undef  in  anduril.h    
     #if defined(USE_EXTENDED_SIMPLE_UI) && defined(USE_SIMPLE_UI)
     ////////// Every action below here is blocked in the Extended Simple UI //////////
     if (cfg.simple_ui_active) {
         return EVENT_NOT_HANDLED;
     }
     #endif  // if extended simple UI
+
+
 
     #ifdef USE_AUTOLOCK
     // 10H: configure the autolock option
@@ -206,6 +244,8 @@ uint8_t lockout_state(Event event, uint16_t arg) {
     return EVENT_NOT_HANDLED;
 }
 
+
+
 #ifdef USE_AUTOLOCK
 // set the auto-lock timer to N minutes, where N is the number of clicks
 void autolock_config_save(uint8_t step, uint8_t value) {
@@ -216,4 +256,16 @@ uint8_t autolock_config_state(Event event, uint16_t arg) {
     return config_state_base(event, arg, 1, autolock_config_save);
 }
 #endif  // #ifdef USE_AUTOLOCK
+
+
+
+
+
+
+/// **lockout-mode.c** 
+
+
+
+///   END   
+
 

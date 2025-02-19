@@ -33,30 +33,55 @@ Heavy It may be, but it has the same file structure as the OG [ToyKeeper Anduril
 .   
 .   
 
-Mod / New Files :
+Mod Files, New Files  
 ---
 
 -  bin/build.sh 
 -  bin/build-all.sh 
 -  bin/version-string.sh 
 
+.   
 
--  ui/anduril/anduril.c 
--  ui/anduril/aux-leds.c 
+-  ui/anduril/anduril.c  
 
 .   
 
-Supporting VER_CHECK_MODE : 
+More aux patterns, using SammysHP's files: 
+-  ui/anduril/aux-leds.c  
+-  ui/anduril/aux-leds.h  
+
+
+Mod, supporting more aux patterns:  
+-  ui/anduril/lockout-mode.c  
+-  ui/anduril/off-mode.c  
+
+
+.   
+
+New files, version check mode in blinky group 
+-  ui/anduril/ver-check-mode.c  
+-  ui/anduril/ver-check-mode.h  
+
+Mod, supporting VER_CHECK_MODE : 
 -  ui/anduril/battcheck-mode.c 
 -  ui/anduril/beacon-mode.c  
+-  ui/anduril/tempcheck-mode.c  
+
 
 .  
 
+candle-mode with more adjustments, using starryalley's candle-mode.c: 
 -  ui/anduril/candle-mode.c  
-    * using starryalley's candle-mode.c , has more adjustments 
 
+.   
 
--  
+Big-deal button mapping:   
+OFF or ON, 3C : strobe-modes  
+OFF, 5C : battcheck-mode (blinky group)   
+Mod files:   
+-  ui/anduril/lockout-mode.c  
+-  ui/anduril/off-mode.c  
+-  ui/anduril/ramp-mode.c  
 
 
 
@@ -69,8 +94,9 @@ Supporting VER_CHECK_MODE :
 .   
 
 
-This is a rough outline / plan, the actual features implemented are TBD   
----
+
+###  This is a rough outline / plan, the actual features implementation are TBD   
+
 
 
 

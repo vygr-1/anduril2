@@ -2,9 +2,28 @@
 // Copyright (C) 2017-2023 Selene ToyKeeper
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+
+
+/// **off-mode.c** 
+/// Mod. : more aux patterns by SammysHP 
+
+
+
+///  BIG-DEAL BUTTON MAPPING 
+///  2025-01-17   Mods. 5C = BATTCHECK . 3C = STROBE MODES . 
+///  also mod  "ramp-mode.c"  to work accordingly, 
+
+
+
+///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
+
+
+
 #pragma once
 
+
 #include "anduril/off-mode.h"
+
 
 #ifdef USE_SUNSET_TIMER
 #include "anduril/sunset-timer.h"
@@ -31,7 +50,7 @@ uint8_t off_state(Event event, uint16_t arg) {
         #endif
         #ifdef USE_INDICATOR_LED
         // redundant, sleep tick does the same thing
-        //indicator_led_update(cfg.indicator_led_mode & 0x03, 0);
+        //indicator_led_update(cfg.indicator_led_mode, 0);
         #elif defined(USE_AUX_RGB_LEDS)
         // redundant, sleep tick does the same thing
         //rgb_led_update(cfg.rgb_led_off_mode, 0);
@@ -55,7 +74,7 @@ uint8_t off_state(Event event, uint16_t arg) {
             go_to_standby = 1;
             #ifdef USE_INDICATOR_LED
             // redundant, sleep tick does the same thing
-            //indicator_led_update(cfg.indicator_led_mode & 0x03, arg);
+            //indicator_led_update(cfg.indicator_led_mode, arg);
             #elif defined(USE_AUX_RGB_LEDS)
             // redundant, sleep tick does the same thing
             //rgb_led_update(cfg.rgb_led_off_mode, arg);
@@ -76,7 +95,7 @@ uint8_t off_state(Event event, uint16_t arg) {
         }
         #endif  // ifdef USE_MANUAL_MEMORY_TIMER
         #ifdef USE_INDICATOR_LED
-        indicator_led_update(cfg.indicator_led_mode & 0x03, arg);
+        indicator_led_update(cfg.indicator_led_mode, arg);
         #elif defined(USE_AUX_RGB_LEDS)
         rgb_led_update(cfg.rgb_led_off_mode, arg);
         #endif
@@ -92,6 +111,10 @@ uint8_t off_state(Event event, uint16_t arg) {
     }
     #endif
 
+
+
+
+
     #if (B_TIMING_ON == B_PRESS_T)
     // hold (initially): go to lowest level (floor), but allow abort for regular click
     else if (event == EV_click1_press) {
@@ -100,6 +123,10 @@ uint8_t off_state(Event event, uint16_t arg) {
     }
     #endif  // B_TIMING_ON == B_PRESS_T
 
+
+
+    ///  1H 
+    ///  1H = floor 
     // hold: go to lowest level
     else if (event == EV_click1_hold) {
         #if (B_TIMING_ON == B_PRESS_T)
@@ -109,14 +136,38 @@ uint8_t off_state(Event event, uint16_t arg) {
             blip();
         } else
         #endif
+
+
         #else  // B_RELEASE_T or B_TIMEOUT_T
         off_state_set_level(nearest_level(1));
         #endif
+
+
+
+
+
+///  RAMP AFTER MOON ?   
+///  DON'T RAMP AFTER MOON   
+///  add this into the  anduril.h  file  :  
+///   #define DEFAULT_DONT_RAMP_AFTER_MOON 1   
+/*
+///  ramp-mode.h  Line 176   :   
+#ifdef USE_RAMP_AFTER_MOON_CONFIG
+#ifndef DEFAULT_DONT_RAMP_AFTER_MOON
+#define DEFAULT_DONT_RAMP_AFTER_MOON 0
+#endif
+ */
+
         #ifdef USE_RAMP_AFTER_MOON_CONFIG
         if (cfg.dont_ramp_after_moon) {
             return EVENT_HANDLED;
         }
         #endif
+
+
+
+
+
         // don't start ramping immediately;
         // give the user time to release at moon level
         //if (arg >= HOLD_TIMEOUT) {  // smaller
@@ -126,11 +177,19 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
+
     // hold, release quickly: go to lowest level (floor)
     else if (event == EV_click1_hold_release) {
         set_state(steady_state, 1);
         return EVENT_HANDLED;
     }
+
+
+
+
+
+
+
 
     #if (B_TIMING_ON != B_TIMEOUT_T)
     // 1 click (before timeout): go to memorized level, but allow abort for double click
@@ -147,6 +206,9 @@ uint8_t off_state(Event event, uint16_t arg) {
     }
     #endif  // if (B_TIMING_ON != B_TIMEOUT_T)
 
+
+
+    ///  1C 
     // 1 click: regular mode
     else if (event == EV_1click) {
         #if (B_TIMING_ON != B_TIMEOUT_T)
@@ -159,6 +221,10 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
+
+
+    ///  2H
+    ///  2H = momentary turbo 
     // click, hold: momentary at ceiling or turbo
     else if (event == EV_click2_hold) {
         ticks_since_on = 0;  // momentary turbo is definitely "on"
@@ -192,11 +258,16 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
+
+
+    ///  2C 
     // 2 clicks: highest mode (ceiling)
     else if (event == EV_2clicks) {
         set_state(steady_state, MAX_LEVEL);
         return EVENT_HANDLED;
     }
+
+
 
     // 3 clicks (initial press): off, to prep for later events
     else if (event == EV_click3_press) {
@@ -208,14 +279,29 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
+
+
+
+
+    ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
+
+    ///  5C 
+    ///   mod. 5C = BATTCHECK MODE ( OG :  3C) . 
     #ifdef USE_BATTCHECK
-    // 3 clicks: battcheck mode / blinky mode group 1
-    else if (event == EV_3clicks) {
+    // 5 clicks: battcheck mode / blinky mode group 1
+    else if (event == EV_5clicks) {
         set_state(battcheck_state, 0);
         return EVENT_HANDLED;
     }
     #endif
 
+    ///   ///   ///   ///   ///   ///   ///   ///   ///   ///
+
+
+
+
+
+    ///  4C 
     #ifdef USE_LOCKOUT_MODE
     // 4 clicks: soft lockout
     else if (event == EV_4clicks) {
@@ -225,6 +311,10 @@ uint8_t off_state(Event event, uint16_t arg) {
     }
     #endif
 
+
+
+    ///   13H 
+    ///   13H = FACTORY RESET  (OG) 
     #if defined(USE_FACTORY_RESET) && defined(USE_SOFT_FACTORY_RESET)
     // 13 clicks and hold the last click: invoke factory reset (reboot)
     else if (event == EV_click13_hold) {
@@ -241,6 +331,9 @@ uint8_t off_state(Event event, uint16_t arg) {
     }
     #endif
 
+
+
+    ///  10H 
     #ifdef USE_SIMPLE_UI
     // 10 clicks, but hold last click: turn simple UI off (or configure it)
     else if ((event == EV_click10_hold) && (!arg)) {
@@ -255,6 +348,12 @@ uint8_t off_state(Event event, uint16_t arg) {
         return EVENT_HANDLED;
     }
 
+
+
+
+
+
+
     ////////// Every action below here is blocked in the (non-Extended) Simple UI //////////
 
     #ifndef USE_EXTENDED_SIMPLE_UI
@@ -264,24 +363,53 @@ uint8_t off_state(Event event, uint16_t arg) {
     #endif  // ifndef USE_EXTENDED_SIMPLE_UI
     #endif  // ifdef USE_SIMPLE_UI
 
+
+
+
+
+
+    ///   ///   ///   ///   ///   ///   ///   ///   ///   ///
+
+    ///  3C 
+    ///  mod 3C = STROBE MODES  (OG :  3H) 
+    // 3C: strobe mode
+    #ifdef USE_STROBE_STATE
+    else if (event == EV_3clicks) {
+        set_state(strobe_state, 0);
+        return EVENT_HANDLED;
+    }
+
+
+    #elif defined(USE_BORING_STROBE_STATE)
+    else if (event == EV_3clicks) {
+        set_state(boring_strobe_state, 0);
+        return EVENT_HANDLED;
+    }
+    #endif
+
+    ///   ///   ///   ///   ///   ///   ///   ///   ///   ///
+
+
+
+
+
+    ///  7C 
     #ifdef USE_INDICATOR_LED
     // 7 clicks: change indicator LED mode
     else if (event == EV_7clicks) {
-        uint8_t mode = (cfg.indicator_led_mode & 3) + 1;
-        #ifdef TICK_DURING_STANDBY
-        mode = mode & 3;
-        #else
-        mode = mode % 3;
-        #endif
+        uint8_t mode = (cfg.indicator_led_mode & INDICATOR_LED_CFG_MASK) + 1;
+        mode = mode % INDICATOR_LED_NUM_PATTERNS;
         #ifdef INDICATOR_LED_SKIP_LOW
         if (mode == 1) { mode ++; }
         #endif
-        cfg.indicator_led_mode = (cfg.indicator_led_mode & 0b11111100) | mode;
-        // redundant, sleep tick does the same thing
-        //indicator_led_update(cfg.indicator_led_mode & 0x03, arg);
+        cfg.indicator_led_mode = (cfg.indicator_led_mode & ~INDICATOR_LED_CFG_MASK) | mode;
         save_config();
         return EVENT_HANDLED;
     }
+
+
+
+    ///  7C 
     #elif defined(USE_AUX_RGB_LEDS)
     // 7 clicks: change RGB aux LED pattern
     else if (event == EV_7clicks) {
@@ -293,6 +421,10 @@ uint8_t off_state(Event event, uint16_t arg) {
         blink_once();
         return EVENT_HANDLED;
     }
+
+
+
+    ///  7H 
     // 7 clicks (hold last): change RGB aux LED color
     else if (event == EV_click7_hold) {
         setting_rgb_mode_now = 1;
@@ -312,6 +444,14 @@ uint8_t off_state(Event event, uint16_t arg) {
     }
     #endif  // end 7 clicks
 
+
+
+
+
+
+
+///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
+
     ////////// Every action below here is blocked in the Extended Simple UI //////////
 
     #ifdef USE_SIMPLE_UI
@@ -321,19 +461,9 @@ uint8_t off_state(Event event, uint16_t arg) {
     }
     #endif  // ifdef USE_EXTENDED_SIMPLE_UI
 
-    // click, click, long-click: strobe mode
-    #ifdef USE_STROBE_STATE
-    else if (event == EV_click3_hold) {
-        set_state(strobe_state, 0);
-        return EVENT_HANDLED;
-    }
-    #elif defined(USE_BORING_STROBE_STATE)
-    else if (event == EV_click3_hold) {
-        set_state(boring_strobe_state, 0);
-        return EVENT_HANDLED;
-    }
-    #endif
 
+
+    ///  10C 
     // 10 clicks: enable simple UI
     else if (event == EV_10clicks) {
         blink_once();
@@ -343,6 +473,9 @@ uint8_t off_state(Event event, uint16_t arg) {
     }
     #endif  // ifdef USE_SIMPLE_UI
 
+
+
+    ///  5C 
     #ifdef USE_MOMENTARY_MODE
     // 5 clicks: momentary mode
     else if (event == EV_5clicks) {
@@ -352,6 +485,9 @@ uint8_t off_state(Event event, uint16_t arg) {
     }
     #endif
 
+
+
+    ///  6C 
     #ifdef USE_TACTICAL_MODE
     // 6 clicks: tactical mode
     else if (event == EV_6clicks) {
@@ -361,6 +497,10 @@ uint8_t off_state(Event event, uint16_t arg) {
     }
     #endif
 
+
+
+    ///  9H 
+    ///  9H = Misc Config menu (varies per light)  
     #ifdef USE_GLOBALS_CONFIG
     // 9 clicks, but hold last click: configure misc global settings
     else if ((event == EV_click9_hold) && (!arg)) {
@@ -373,6 +513,12 @@ uint8_t off_state(Event event, uint16_t arg) {
 }
 
 
+
+
+
+
+
+
 void off_state_set_level(uint8_t level) {
     // this pattern gets used a few times, so reduce duplication
     #ifdef USE_SMOOTH_STEPS
@@ -381,4 +527,16 @@ void off_state_set_level(uint8_t level) {
     #endif
     set_level(level);
 }
+
+
+
+
+
+
+/// **off-mode.c** 
+
+
+
+///   END   
+
 
