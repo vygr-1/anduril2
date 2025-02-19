@@ -33,6 +33,23 @@ Heavy It may be, but it has the same file structure as the OG [ToyKeeper Anduril
 .   
 .   
 
+Edited Files :
+---
+
+-  bin/build.sh 
+-  bin/build-all.sh 
+-  bin/version-string.sh 
+
+
+-  ui/anduril/anduril.c 
+-  
+
+
+
+
+
+
+
 .   
 .   
 .   

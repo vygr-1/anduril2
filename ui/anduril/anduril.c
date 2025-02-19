@@ -34,6 +34,10 @@
  * as possible.  These are mostly "USE" flags.
  */
 
+
+
+
+
 /********* load up MCU info, like ROM size and such *********/
 #include "arch/mcu.h"
 
@@ -105,6 +109,24 @@
 #include "anduril/version-check-mode.h"
 #endif
 
+
+
+
+
+/*  ///  VER_CHECK_MODE
+///  VER_CHECK_MODE in blinky group  
+///  compiled and tested OK on the SC31 Pro t1616 
+///  additional line in the "sofirn/sc31-pro-t1616/anduril.h" :  
+      #define USE_VER_CHECK_MODE
+ */
+#ifdef USE_VER_CHECK_MODE
+#include "anduril/ver-check-mode.h"
+#endif
+
+
+
+
+
 #ifdef USE_BATTCHECK_MODE
 #include "anduril/battcheck-mode.h"
 #endif
@@ -154,6 +176,9 @@
 #include "anduril/load-save-config.h"
 
 
+
+
+
 /********* Include all the app logic source files *********/
 // (is a bit weird to do things this way,
 //  but it saves a lot of space by letting us use the -fwhole-program flag)
@@ -172,6 +197,24 @@
 #ifdef USE_VERSION_CHECK
 #include "anduril/version-check-mode.c"
 #endif
+
+
+
+
+
+/*  ///  VER_CHECK_MODE
+///  VER_CHECK_MODE in blinky group  
+///  compiled and tested OK on the SC31 Pro t1616 
+///  additional line in the "sofirn/sc31-pro-t1616/anduril.h" :  
+      #define USE_VER_CHECK_MODE
+ */
+#ifdef USE_VER_CHECK_MODE
+#include "anduril/ver-check-mode.c"
+#endif
+
+
+
+
 
 #ifdef USE_BATTCHECK_MODE
 #include "anduril/battcheck-mode.c"
@@ -279,6 +322,9 @@ void setup() {
 }
 
 
+
+
+
 // runs repeatedly whenever light is "on" (not in standby)
 void loop() {
 
@@ -346,6 +392,26 @@ void loop() {
     }
     #endif
 
+
+
+
+
+    /*  ///  VER_CHECK_MODE
+    ///  VER_CHECK_MODE in blinky group  
+    ///  compiled and tested OK on the SC31 Pro t1616 
+    ///  in the "sofirn/sc31-pro-t1616/anduril.h" :  
+          #define USE_VER_CHECK_MODE
+     */ 
+    #ifdef USE_VER_CHECK_MODE
+    else if (state == ver_check_state) {
+        ver_check_iter();
+    }
+    #endif
+
+
+
+
+
     #ifdef USE_BEACON_MODE
     else if (state == beacon_state) {
         beacon_mode_iter();
@@ -372,6 +438,9 @@ void loop() {
     #endif
 
 }
+
+
+
 
 
 // instead of handling EV_low_voltage in each mode,
@@ -408,4 +477,17 @@ void low_voltage() {
     }
 
 }
+
+
+
+
+
+///   ///   ///   ///   ///   ///   ///   ///   ///   ///  
+///   ///   ///   ///   ///   ///   ///   ///   ///   ///  
+///   ///   ///   ///   ///   ///   ///   ///   ///   ///  
+
+
+
+///   END   
+
 
