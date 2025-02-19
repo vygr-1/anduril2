@@ -9,6 +9,8 @@
 # enable "**" for recursive glob (requires bash)
 shopt -s globstar
 
+
+
 function main {
 
     if [ "$#" -gt 0 ]; then
@@ -47,34 +49,129 @@ function main {
         fi
         if [ 1 = $SKIP ]; then continue ; fi
 
+
+
+        ##  build announcement, a little mod 
         # announce what we're going to build
+        ##  OG: echo "===== $UI $REV : $NAME ====="
+        ###  mod:  
+        echo "   "
+        echo "   "
+        echo "###   ###   ###   ###   ###   ###   ###   ###   ###   ###"
+        echo "   "
+        echo "   "
         echo "===== $UI $REV : $NAME ====="
+        echo "   "
+
+
+
+        ##  adding BUILDDATE to the hex file name 
+        BUILDDATE=$( date -d '7 hours' '+%y%m%d.%H%M%S' )
 
         # try to compile, track result, and rename compiled files
         if bin/build.sh "$TARGET" ; then
-            HEX_OUT="hex/$UI.$NAME.hex"
+
+            ##  OG:  HEX_OUT="hex/$UI.$NAME.hex"
+            ##  custom name, with build date 
+            HEX_OUT="hex/a2.$BUILDDATE.$NAME.hex"
+
             mv -f "ui/$UI/$UI".hex "$HEX_OUT"
+
             MD5=$(md5sum "$HEX_OUT" | cut -d ' ' -f 1)
+
+            ##  OG:  echo "  # $MD5"
+            ##  OG:  echo "  > $HEX_OUT"
+
+            ###  mod:  
+            echo "   "
             echo "  # $MD5"
             echo "  > $HEX_OUT"
+            echo "   "
+            echo "  OK: $NAME build succeeded"
+
+
+
             PASS=$((PASS + 1))
-            PASSED="$PASSED $NAME"
+            PASSED="$PASSED $NAME."
+
+
+
         else
-            echo "ERROR: build failed"
+
+            ##  OG:  echo "ERROR: build failed"
+
+            ##  mod:  
+            echo "   "
+            echo "  ERROR: build failed"
+
+
             FAIL=$((FAIL + 1))
-            FAILED="$FAILED $NAME"
+            FAILED="$FAILED $NAME."
         fi
 
     done
 
+
+
+
+
     # summary
+    ##  OG:  echo "===== $PASS builds succeeded, $FAIL failed ====="
+
+    ###  mod:  
+    echo "   "
+    echo "   "
+    echo "###   ###   ###   ###   ###   ###   ###   ###   ###   ###"
+    echo "   "
+    echo "   "
     echo "===== $PASS builds succeeded, $FAIL failed ====="
-    #echo "PASS: $PASSED"
-    if [ 0 != $FAIL ]; then
-        echo "FAIL:$FAILED"
-        exit 1
+    echo "   "
+    echo "   "
+
+
+
+    ##  OG:  #echo "PASS: $PASSED"
+    ##  OG:  if [ 0 != $FAIL ]; then
+        ##  OG:  echo "FAIL:$FAILED"
+        ##  OG:  exit 1
+    ##  OG:  fi
+##  OG:  }
+
+    ###  mod:  
+
+    ## PASS
+    if [ 0 != $PASS ]; then
+
+        echo "SUCCEEDED: $PASSED"
+        echo "   "
+        echo "   "
+
     fi
+
+    ## FAIL
+    if [ 0 != $FAIL ]; then
+
+        echo "FAILED   : $FAILED"
+        echo "   "
+        echo "   "
+
+    fi
+
+
+
+    ##  end / border
+    echo "###   ###   ###   ###   ###   ###   ###   ###   ###   ###"
+    echo "   "
+    echo "   "
+    echo "   "
+
+    exit 1
+
 }
+
+
+
+
 
 function make-version-h {
     # old: version = build date
@@ -87,4 +184,17 @@ function make-version-h {
 }
 
 main "$@"
+
+
+
+
+
+###   ###   ###   ###   ###   ###   ###   ###   ###
+###   ###   ###   ###   ###   ###   ###   ###   ###
+###   ###   ###   ###   ###   ###   ###   ###   ###
+
+
+
+##  END
+
 
