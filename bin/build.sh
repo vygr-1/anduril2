@@ -81,3 +81,11 @@ run "$OBJCOPY" "$OBJCOPYFLAGS" "$PROGRAM.elf" "$PROGRAM.hex"
 # deprecated
 #run avr-size -C --mcu=$MCUNAME $PROGRAM.elf | grep Full
 run avr-objdump -Pmem-usage "$PROGRAM".elf | grep -E 'Full|Device' | sed 's/^/  /;'
+
+
+
+
+
+###   END   
+
+
