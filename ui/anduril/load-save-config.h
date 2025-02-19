@@ -2,14 +2,25 @@
 // Copyright (C) 2017-2023 Selene ToyKeeper
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+
 #pragma once
+
+
+///   ///   ///   ///   ///   ///   ///   ///   ///   ///
+
+
 
 // remember stuff even after battery was changed
 void load_config();
 void save_config();
+
+
+
 #ifdef START_AT_MEMORIZED_LEVEL
 void save_config_wl();
 #endif
+
+
 
 // a struct to hold config values
 Config cfg = {
@@ -18,35 +29,55 @@ Config cfg = {
 
     // smooth vs discrete ramping
     .ramp_style = RAMP_STYLE,  // 0 = smooth, 1 = discrete
+
+
     #ifdef USE_2C_STYLE_CONFIG
         // 1 = A1 style, 2 = A2 style
         .ramp_2c_style = DEFAULT_2C_STYLE,
     #endif
 
+
     // settings for each ramp (smooth, stepped, simple UI)
     #ifdef USE_RAMP_CONFIG
+
         .ramp_floors = {
             RAMP_SMOOTH_FLOOR,
             RAMP_DISCRETE_FLOOR,
             #ifdef USE_SIMPLE_UI
                 SIMPLE_UI_FLOOR,
+            #ifdef USE_CHILD_UI
+                CHILD_UI_FLOOR,
+            #endif
             #endif
             },
+
+
         .ramp_ceils = {
             RAMP_SMOOTH_CEIL,
             RAMP_DISCRETE_CEIL,
             #ifdef USE_SIMPLE_UI
                 SIMPLE_UI_CEIL,
+            #ifdef USE_CHILD_UI
+                CHILD_UI_CEIL,
+            #endif
             #endif
             },
+
+
         .ramp_stepss = {
             DEFAULT_RAMP_SPEED,
             RAMP_DISCRETE_STEPS,
             #ifdef USE_SIMPLE_UI
                 SIMPLE_UI_STEPS,
+            #ifdef USE_CHILD_UI
+                CHILD_UI_STEPS,
+            #endif
             #endif
             },
+
     #endif
+
+
 
     #ifdef USE_SIMPLE_UI
         // whether to enable the simplified interface or not
@@ -55,11 +86,23 @@ Config cfg = {
             // 0 = no turbo, 1 = A1 style, 2 = A2 style
             .ramp_2c_style_simple = DEFAULT_2C_STYLE_SIMPLE,
         #endif
+
+
+        #ifdef USE_CHILD_UI
+            .child_ui_active = CHILD_UI_ACTIVE,
+            .child_ui_floor = CHILD_UI_FLOOR,
+            .child_ui_ceil = CHILD_UI_CEIL,
+            .saved_ramp_style = RAMP_STYLE,
+        #endif
     #endif
+
+
 
     #ifdef USE_RAMP_AFTER_MOON_CONFIG
         .dont_ramp_after_moon = DEFAULT_DONT_RAMP_AFTER_MOON,
     #endif
+
+
 
     #ifdef USE_MANUAL_MEMORY
         .manual_memory = DEFAULT_MANUAL_MEMORY,
@@ -68,6 +111,8 @@ Config cfg = {
         #endif
     #endif
 
+
+
     ///// channel modes / color modes
 
     #if NUM_CHANNEL_MODES > 1
@@ -75,31 +120,47 @@ Config cfg = {
         .channel_mode = DEFAULT_CHANNEL_MODE,
         // user can take unwanted modes out of the rotation (bitmask)
         .channel_modes_enabled = CHANNEL_MODES_ENABLED,
+
+
         #ifdef USE_MANUAL_MEMORY
             // reset w/ manual memory
             .manual_memory_channel_mode = DEFAULT_CHANNEL_MODE,
         #endif
+
+
         #ifdef DEFAULT_BLINK_CHANNEL
             // blink numbers in a specific channel (user configurable)
             .blink_channel = DEFAULT_BLINK_CHANNEL,
         #endif
     #endif
+
+
+
     #ifdef USE_CHANNEL_MODE_ARGS
+
         // one byte of extra data per channel mode, like for tint value
         .channel_mode_args = { CHANNEL_MODE_ARGS },
         #ifdef USE_MANUAL_MEMORY
             // remember and reset 1 extra parameter per channel mode (like tint)
             .manual_memory_channel_args = { CHANNEL_MODE_ARGS },
         #endif
+
         #ifdef USE_STEPPED_TINT_RAMPING
             .tint_ramp_style = DEFAULT_TINT_RAMP_STYLE,
         #endif
+
     #endif
+
+
 
     ///// Smooth animation between steps, and for on/off
     #ifdef USE_SMOOTH_STEPS
         .smooth_steps_style = DEFAULT_SMOOTH_STEPS_STYLE,
     #endif
+
+
+
+
 
     ///// strobe / blinky mode settings
 
@@ -112,18 +173,74 @@ Config cfg = {
             #endif
         #endif
     #endif
+
+
     #if defined(USE_PARTY_STROBE_MODE) || defined(USE_TACTICAL_STROBE_MODE)
         // party / tactical strobe timing
         // party strobe 24 Hz, tactical strobe 10 Hz
         .strobe_delays = { 41, 67 },
     #endif
+
+
     #ifdef USE_BIKE_FLASHER_MODE
         .bike_flasher_brightness = DEFAULT_BIKING_LEVEL,
     #endif
+
+
     #ifdef USE_BEACON_MODE
         // beacon timing
         .beacon_seconds = 2,
     #endif
+
+
+
+
+
+    /// 2025-02-10 
+    /// beaconn-mode
+    #ifdef USE_BEACONN_MODE
+
+        /// beaconn_brightness
+        .beaconn_brightness = DEFAULT_BEACONN_LEVEL,
+
+        // beaconn timing
+        .beaconn_seconds = 2,
+
+    #endif
+
+
+
+
+
+    #ifdef USE_LIGHTNING_MODE
+        .lightning_busy_factor = LIGHTNING_BUSY_FACTOR,
+    #endif
+
+
+    #ifdef USE_CANDLE_MODE
+        .candle_amplitude = CANDLE_AMPLITUDE,
+        .candle_wobble_style = DEFAULT_CANDLE_WOBBLE_MODE,
+    #endif
+
+
+
+    #ifdef USE_FIREWORK_MODE
+        .firework_brightness = RAMP_SMOOTH_CEIL,
+    #endif
+
+
+    #ifdef USE_LIGHTHOUSE_MODE
+        .lighthouse_delay = DEFAULT_LIGHTHOUSE_DELAY,
+    #endif
+
+
+    #ifdef USE_BROKEN_FLUORESCENT_MODE
+        .fluoresent_brightness = DEFAULT_LEVEL,
+    #endif
+
+
+
+
 
     ///// voltage and temperature
 
@@ -136,6 +253,8 @@ Config cfg = {
         .therm_ceil = DEFAULT_THERM_CEIL,
         .therm_cal_offset = 0,
     #endif
+
+
 
     ///// aux LEDs
 
@@ -154,6 +273,8 @@ Config cfg = {
         #endif
     #endif
 
+
+
     ///// misc other mode settings
 
     #ifdef USE_AUTOLOCK
@@ -163,6 +284,8 @@ Config cfg = {
         .tactical_levels = { TACTICAL_LEVELS },
     #endif
 
+
+
     ///// hardware config / globals menu
 
     #ifdef USE_JUMP_START
@@ -170,4 +293,47 @@ Config cfg = {
     #endif
 
 };
+/// a struct to hold config values
+
+
+
+
+
+/*   /// 
+
+ */
+
+
+/*   /// 
+
+ */
+
+
+
+
+
+    /* ///   ///   ///   ///   ///   ///   ///   ///   ///   ///
+    /// 2025-02-09 
+    /// beacon-mode-isg
+    #ifdef USE_BEACON_MODE_ISG
+        .beacon_isg_brightness = RAMP_DISCRETE_CEIL,
+        // beacon isg timing
+        .beacon_isg_seconds = 2,
+    #endif
+    /// beacon-mode-is FAILED, DIDN'T WORK.
+    ///   ///   ///   ///   ///   ///   ///   ///   ///   ///
+     */
+
+
+
+
+
+
+
+///   ///   ///   ///   ///   ///   ///   ///   ///   ///
+
+
+
+///   END   
+
 

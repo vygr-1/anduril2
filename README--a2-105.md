@@ -55,7 +55,6 @@ Mod, supporting more aux patterns:
 -  ui/anduril/lockout-mode.c  
 -  ui/anduril/off-mode.c  
 
-
 .   
 
 New files, version check mode in blinky group 
@@ -66,7 +65,7 @@ Mod, supporting VER_CHECK_MODE :
 -  ui/anduril/battcheck-mode.c 
 -  ui/anduril/beacon-mode.c  
 -  ui/anduril/tempcheck-mode.c  
-
+-  ui/anduril/sos-mode.c  
 
 .  
 
@@ -75,7 +74,7 @@ candle-mode with more adjustments, using starryalley's candle-mode.c:
 
 .   
 
-Big-deal button mapping:   
+BIG-DEAL button mapping:   
 OFF or ON, 3C : strobe-modes  
 OFF, 5C : battcheck-mode (blinky group)   
 Mod files:   
@@ -83,10 +82,21 @@ Mod files:
 -  ui/anduril/off-mode.c  
 -  ui/anduril/ramp-mode.c  
 
+.   
 
+Custom version-check-mode.h 
 
+-  ui/anduril/version-check-mode.h  
 
+.   
 
+Custom strobe-modes   
+-  ui/anduril/strobe-modes.c   
+-  ui/anduril/strobe-modes.h  
+-  ui/anduril/strobe-modes-fsm.h  
+
+-  ui/anduril/load-save-config.h  
+-  ui/anduril/load-save-config-fsm.h   
 
 
 .   

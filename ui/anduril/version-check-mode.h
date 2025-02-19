@@ -12,8 +12,28 @@
 #error MODEL_NUMBER undefined
 #endif
 
-#include "anduril/version.h"
-const PROGMEM uint8_t version_number[] = MODEL_NUMBER "." VERSION_NUMBER;
+
+
+///   OG:   //  #include "anduril/version.h"   
+///   mod: 
+#include ".build/anduril/version.h"
+
+
+
+///   OG: const PROGMEM uint8_t version_number[] = MODEL_NUMBER "." VERSION_NUMBER;
+///   mod:
+const PROGMEM uint8_t version_number[] = ".." MODEL_NUMBER ".." VERSION_NUMBER "..." ;
+
+
+
 uint8_t version_check_state(Event event, uint16_t arg);
+
 inline void version_check_iter();
+
+
+
+
+
+///   END   
+
 
