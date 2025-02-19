@@ -48,7 +48,7 @@ uint8_t battcheck_state(Event event, uint16_t arg) {
 
         /*  ///  VER_CHECK_MODE
         ///  tested on the SC31 Pro t1616 
-        ///  line in the "sofirn/sc31-pro-t1616/anduril.h" :  
+        ///  mod in the "sofirn/sc31-pro-t1616/anduril.h" :  
               #define USE_VER_CHECK_MODE
          */
         #elif defined(USE_VER_CHECK_MODE)
