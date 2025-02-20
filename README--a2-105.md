@@ -33,8 +33,21 @@ Heavy It may be, but it has the same file structure as the OG [ToyKeeper Anduril
 .   
 .   
 
-Mod Files, New Files  
+New Files  
 ---
+
+
+There are two new files, ver-check-mode,  
+custom version check mode in blinky group 
+-  ui/anduril/ver-check-mode.c  
+-  ui/anduril/ver-check-mode.h  
+
+.   
+. 
+  
+Modified Files
+---
+
 
 -  bin/build.sh 
 -  bin/build-all.sh 
@@ -56,10 +69,6 @@ Mod, supporting more aux patterns:
 -  ui/anduril/off-mode.c  
 
 .   
-
-New files, version check mode in blinky group 
--  ui/anduril/ver-check-mode.c  
--  ui/anduril/ver-check-mode.h  
 
 Mod, supporting VER_CHECK_MODE : 
 -  ui/anduril/battcheck-mode.c 
@@ -84,12 +93,6 @@ Mod files:
 
 .   
 
-Custom version-check-mode.h 
-
--  ui/anduril/version-check-mode.h  
-
-.   
-
 Custom strobe-modes   
 -  ui/anduril/strobe-modes.c   
 -  ui/anduril/strobe-modes.h  
@@ -98,6 +101,10 @@ Custom strobe-modes
 -  ui/anduril/load-save-config.h  
 -  ui/anduril/load-save-config-fsm.h   
 
+.   
+
+Custom version-check-mode.h 
+-  ui/anduril/version-check-mode.h  
 
 .   
 .   
