@@ -1,10 +1,10 @@
-// Sofirn SP36 (small Q8) config options for Anduril
-// Copyright (C) 2018-2023 Selene ToyKeeper
+// Sofirn SP36 (small Q8) config options for Anduril using the Attiny1616
+// Copyright (C) 2021-2023 (FIXME)
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
 // same as  the  BLF Q8, mostly
-#include "sofirn/blf-q8/anduril.h"
+#include "sofirn/blf-q8-t1616/anduril.h"
 
 // voltage readings were a little high with the Q8 value
 #undef VOLTAGE_FUDGE_FACTOR

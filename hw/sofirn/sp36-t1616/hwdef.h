@@ -1,10 +1,29 @@
-// Wurkkos TS10 driver layout
+/// "sofirn/sp36-t1616/hwdef.h"
+/// Sofirn SP36 Attiny1616
+
+// BLF Q8 driver layout using the Attiny1616
 // Copyright (C) 2021-2023 gchart, Selene ToyKeeper
 // SPDX-License-Identifier: GPL-3.0-or-later
+
+
+/*   /// BLANK   
+
+ */
+
+
+///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
+
+
 #pragma once
 
+
+///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
+
+
 /*
- * (based on BLF Q8-t1616 driver layout)
+ * (based on Wurkkos TS10 driver layout,
+ *  which in turn was based on an older version of this BLF-Q8-t1616 driver)
+ * (should probably merge the two files at some point)
  * Driver pinout:
  * eSwitch:    PA5
  * Aux LED:    PB5
@@ -15,29 +34,44 @@
 
 
 
-#define HWDEF_C  wurkkos/ts10/hwdef.c
+// nearly all t1616-based FET+1 drivers work pretty much the same
+// (this one has single-color aux like the TS10)
+/// #define HWDEF_C  wurkkos/ts10/hwdef.c
+/// #define HWDEF_C  sofirn/sp36-t1616/hwdef.c
+#define HWDEF_C  sofirn/sp36-t1616/hwdef.c
 
 
 
 // allow using aux LEDs as extra channel modes
 #include "fsm/chan-aux.h"
 
+
+
 // channel modes:
 // * 0. FET+7135 stacked
 // * 1. aux LEDs
+
 #define NUM_CHANNEL_MODES  2
+
 enum CHANNEL_MODES {
     CM_MAIN = 0,
     CM_AUX
 };
 
+
+
 #define DEFAULT_CHANNEL_MODE  CM_MAIN
+
+
 
 // right-most bit first, modes are in fedcba9876543210 order
 #define CHANNEL_MODES_ENABLED 0b00000001
 
 
+
 #define PWM_CHANNELS 2  // old, remove this
+
+
 
 #define PWM_BITS      16        // dynamic 16-bit, but never goes over 255
 #define PWM_GET       PWM_GET8
@@ -46,19 +80,27 @@ enum CHANNEL_MODES {
 #define PWM1_DATATYPE uint8_t   // 1x7135 ramp
 #define PWM2_DATATYPE uint8_t   // DD FET ramp
 
+
+
 // PWM parameters of both channels are tied together because they share a counter
 #define PWM_TOP TCA0.SINGLE.PERBUF   // holds the TOP value for for variable-resolution PWM
 #define PWM_TOP_INIT  255    // highest value used in top half of ramp
 // not necessary when double-buffered "BUF" registers are used
 #define PWM_CNT TCA0.SINGLE.CNT   // for resetting phase after each TOP adjustment
 
+
+
 // 1x7135 channel
 #define CH1_PIN  PB1
 #define CH1_PWM  TCA0.SINGLE.CMP1BUF  // CMP1 is the output compare register for PB1
 
+
+
 // DD FET channel
 #define CH2_PIN  PB0
 #define CH2_PWM  TCA0.SINGLE.CMP0BUF  // CMP0 is the output compare register for PB0
+
+
 
 // e-switch
 #define SWITCH_PIN      PIN5_bp
@@ -67,14 +109,19 @@ enum CHANNEL_MODES {
 #define SWITCH_VECT     PORTA_PORT_vect
 #define SWITCH_INTFLG   VPORTA.INTFLAGS
 
+
+
 // average drop across diode on this hardware
 #ifndef VOLTAGE_FUDGE_FACTOR
 #define VOLTAGE_FUDGE_FACTOR 7  // add 0.35V
 #endif
 
-// front-facing aux LEDs
-#define AUXLED_PIN  PIN5_bp
-#define AUXLED_PORT PORTB
+
+
+// lighted button
+#define AUXLED_PIN   PIN5_bp
+#define AUXLED_PORT  PORTB
+
 
 
 inline void hwdef_setup() {
@@ -131,5 +178,11 @@ inline void hwdef_setup() {
 }
 
 
+
 #define LAYOUT_DEFINED
+
+
+
+///   END   
+
 

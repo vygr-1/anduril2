@@ -1,82 +1,32 @@
-/// "sofirn/sp10-pro/anduril.h"
-
 // Sofirn SP10 Pro config options for Anduril
 // Copyright (C) 2022-2023 (original author TBD), Selene ToyKeeper
 // SPDX-License-Identifier: GPL-3.0-or-later
-
-
-/*   /// BLANK   
-
- */
-
-
-///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
-
-
 #pragma once
-
 
 #include "sofirn/sp10-pro/hwdef.h"
 
-
-#include "sofirn/anduril.h"
-
-
-///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
-
-
-///   no INDICATOR LED 
-#undef USE_INDICATOR_LED
-
-
-///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
-
-
 // 1....15: level_calc.py 3.01 1  15 7135 1 0.1   2 --pwm dyn:15:64:64
 // 16..150: level_calc.py 5.01 1 135 7135 1   2 800 --pwm dyn:49:3072:255:3.0
-
 #define RAMP_SIZE 150
-
 #define _PWM1_LEVELS_  1, 2, 4, 6, 9,12,15,19,23,28,34,41,48,55,64
-
 #define _PWM1_TOPS_   64,64,64,64,64,64,64,64,64,64,64,64,64,64,64
-
-
 #define _PWM2_LEVELS_    1,   1,   2,   2,   3,   3,   4,   4,   5,   5,   6,   6,   6,   7,   7,   7,   7,  7,  7,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  8,  9,  9,  9, 10, 10, 10, 11, 11, 12, 13, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 33, 34, 35, 37, 38, 39, 41, 42, 44, 46, 47, 49, 51, 53, 55, 57, 59, 61, 63, 65, 67, 70, 72, 74, 77, 79, 82, 85, 88, 90, 93, 96, 99,103,106,109,113,116,120,123,127,131,135,139,143,147,151,156,160,165,170,175,180,185,190,195,201,206,212,218,223,230,236,242,248,255
-
-
 #define _PWM2_TOPS_   3072,1960,2372,1476,2097,1572,1920,1570,1777,1524,1646,1454,1286,1369,1234,1115,1011,918,837,894,823,759,702,650,603,560,522,487,455,425,398,374,351,330,310,292,275,259,280,265,251,266,253,240,252,240,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255
-
-
 #define PWM1_LEVELS   _PWM1_LEVELS_,_PWM2_TOPS_
-
 #define PWM2_LEVELS   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,_PWM2_LEVELS_
-
 #define PWM_TOPS      _PWM1_TOPS_,_PWM2_TOPS_
 
-
-
 #define MAX_1x7135         15
-
 #define HALFSPEED_LEVEL    15
-
 #define QUARTERSPEED_LEVEL 15
-
 #define DEFAULT_LEVEL      50
-
-
 
 #define RAMP_SMOOTH_FLOOR    1
 #define RAMP_SMOOTH_CEIL     150
-
-
-
 // 1 25 50 [75] 100 125 150
 #define RAMP_DISCRETE_FLOOR  1
 #define RAMP_DISCRETE_CEIL   RAMP_SMOOTH_CEIL
 #define RAMP_DISCRETE_STEPS  7
-
-
 
 // at Sofirn's request, use max (150) for the Simple UI ceiling
 // 15 48 [82] 116 150
@@ -84,29 +34,15 @@
 #define SIMPLE_UI_CEIL   150
 #define SIMPLE_UI_STEPS   5
 
-
-
-///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
-
-
-
 // turn on at ~6 lm by default (level 50/150, or ramp step 2/5 or 3/7)
 // (also sets lockout mode 2H to a useful level)
 #define DEFAULT_MANUAL_MEMORY 50
+// reset to default after being off for 10 minutes
+#define DEFAULT_MANUAL_MEMORY_TIMER 10
 
-
-
-/*   /// sp10-pro   
-
-///   // reset to default after being off for 10 minutes
-///   #define DEFAULT_MANUAL_MEMORY_TIMER 10
-
-///   #define USE_SOS_MODE
-///   #define USE_SOS_MODE_IN_BLINKY_GROUP
-
- */
-
-
+// enable SOS in the blinkies group
+#define USE_SOS_MODE
+#define USE_SOS_MODE_IN_BLINKY_GROUP
 
 // Allow 3C in Simple UI for switching between smooth and stepped ramping
 #define USE_SIMPLE_UI_RAMPING_TOGGLE
@@ -138,110 +74,6 @@
 #endif
 
 
-
-///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
-
-
-
-/* /// TACTICAL MODE LEVELS
-///   TACTICAL MODE LEVELS 
-///   1H,  2H , 3H : 
-///   HIGH , TACTICAL STROBE , LOW
-///     150 = turbo
-///     (RAMP_SIZE+1) = party strobe
-///     (RAMP_SIZE+2) = tactical strobe
-
- */
-#define TACTICAL_LEVELS 120,(RAMP_SIZE+2),30
-
-
-
-///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
-
-
-
-/* /////    BLINKIES AND STROBES     /////  
-///  from `config-default.h` :  
-// enable beacon mode
-#define USE_BEACON_MODE
-
-// enable various strobe modes
-#define USE_BIKE_FLASHER_MODE
-#define USE_PARTY_STROBE_MODE
-#define USE_TACTICAL_STROBE_MODE
-
-#define USE_LIGHTNING_MODE
-#define USE_CANDLE_MODE
-
-
-///  from  `sofirn--anduril.h` :  
-#define USE_FIREWORK_MODE
-#define USE_LIGHTHOUSE_MODE
-#define USE_BAD_FLUORESCENT_MODE
- */
-
-
-/* /// DISABLE SOME BLINKIES ? 
-#undef USE_BEACON_MODE 
-
-
- */
-#undef USE_SOS_MODE
-
-
-/* /// DISABLE SOME STROBES ? 
-#undef USE_BIKE_FLASHER_MODE
-
-#undef USE_PARTY_STROBE_MODE
-#undef USE_TACTICAL_STROBE_MODE
-
-#undef USE_FIREWORK_MODE
-#undef USE_LIGHTHOUSE_MODE
-
-
- */
-#undef USE_LIGHTNING_MODE
-#undef USE_CANDLE_MODE
-
-#undef USE_BAD_FLUORESCENT_MODE
-
-
-
-///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
-
-
-
-/* /// more mods ?   :::  
-#undef USE_RAMP_SPEED_CONFIG
-#undef USE_RAMP_AFTER_MOON_CONFIG
-#undef USE_2C_STYLE_CONFIG
-
-
-#undef USE_SUNSET_TIMER
-
-#undef USE_CHANNEL_PER_STROBE
-
-#undef USE_POLICE_STROBE_MODE
-
- */
-#undef USE_SIMPLE_UI
-
-
-
-///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
-
-///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
-
-///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
-
-
-
-/*   /// BLANK   
-
- */
-
-
-
-///   END   
-
+// enable factory reset on 13H without loosening tailcap
+#define USE_SOFT_FACTORY_RESET
 

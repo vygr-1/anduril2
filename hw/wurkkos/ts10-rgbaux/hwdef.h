@@ -1,40 +1,46 @@
-// Wurkkos TS10 driver layout
-// Copyright (C) 2021-2023 gchart, Selene ToyKeeper
+/// wurkkos/ts10-rgbaux/hwdef.h  
+
+
+// Wurkkos TS25 driver layout
+// Copyright (C) 2022-2023 (FIXME)
 // SPDX-License-Identifier: GPL-3.0-or-later
+
+
 #pragma once
 
-/*
- * (based on BLF Q8-t1616 driver layout)
+
+/*  /// Wurkkos TS25 driver layout
+ * 
  * Driver pinout:
  * eSwitch:    PA5
- * Aux LED:    PB5
  * PWM FET:    PB0 (TCA0 WO0)
  * PWM 1x7135: PB1 (TCA0 WO1)
  * Voltage:    VCC
+ * Aux Red:    PC2
+ * Aux Green:  PC3
+ * Aux Blue:   PC1
  */
 
 
-
-#define HWDEF_C  wurkkos/ts10/hwdef.c
-
+#define HWDEF_C  wurkkos/ts10/rgbaux/hwdef.c
 
 
 // allow using aux LEDs as extra channel modes
-#include "fsm/chan-aux.h"
+#include "fsm/chan-rgbaux.h"
 
 // channel modes:
 // * 0. FET+7135 stacked
-// * 1. aux LEDs
-#define NUM_CHANNEL_MODES  2
+// * 1+. aux RGB
+#define NUM_CHANNEL_MODES   (1 + NUM_RGB_AUX_CHANNEL_MODES)
 enum CHANNEL_MODES {
     CM_MAIN = 0,
-    CM_AUX
+    RGB_AUX_ENUMS
 };
 
 #define DEFAULT_CHANNEL_MODE  CM_MAIN
 
 // right-most bit first, modes are in fedcba9876543210 order
-#define CHANNEL_MODES_ENABLED 0b00000001
+#define CHANNEL_MODES_ENABLED 0b0000000000000001
 
 
 #define PWM_CHANNELS 2  // old, remove this
@@ -72,9 +78,14 @@ enum CHANNEL_MODES {
 #define VOLTAGE_FUDGE_FACTOR 7  // add 0.35V
 #endif
 
-// front-facing aux LEDs
-#define AUXLED_PIN  PIN5_bp
-#define AUXLED_PORT PORTB
+// this driver allows for aux LEDs under the optic
+#define AUXLED_R_PIN    PIN2_bp    // pin 2
+#define AUXLED_G_PIN    PIN3_bp    // pin 3
+#define AUXLED_B_PIN    PIN1_bp    // pin 1
+#define AUXLED_RGB_PORT PORTC  // PORTA or PORTB or PORTC
+
+// this light has three aux LED channels: R, G, B
+#define USE_AUX_RGB_LEDS
 
 
 inline void hwdef_setup() {
@@ -84,11 +95,13 @@ inline void hwdef_setup() {
                       CLKCTRL_PDIV_2X_gc | CLKCTRL_PEN_bm );
 
     //VPORTA.DIR = ...;
-    // Outputs
-    VPORTB.DIR = PIN0_bm   // DD FET
-               | PIN1_bm   // 7135
-               | PIN5_bm;  // Aux LED
-    //VPORTC.DIR = ...;
+    // Outputs: PWMs
+    VPORTB.DIR = PIN0_bm
+               | PIN1_bm;
+    // RGB aux LEDs
+    VPORTC.DIR = PIN1_bm
+               | PIN2_bm
+               | PIN3_bm;
 
     // enable pullups on the unused pins to reduce power
     PORTA.PIN0CTRL = PORT_PULLUPEN_bm;
@@ -105,12 +118,12 @@ inline void hwdef_setup() {
     PORTB.PIN2CTRL = PORT_PULLUPEN_bm;
     PORTB.PIN3CTRL = PORT_PULLUPEN_bm;
     PORTB.PIN4CTRL = PORT_PULLUPEN_bm;
-    //PORTB.PIN5CTRL = PORT_PULLUPEN_bm; // Aux LED
+    PORTB.PIN5CTRL = PORT_PULLUPEN_bm;
 
     PORTC.PIN0CTRL = PORT_PULLUPEN_bm;
-    PORTC.PIN1CTRL = PORT_PULLUPEN_bm;
-    PORTC.PIN2CTRL = PORT_PULLUPEN_bm;
-    PORTC.PIN3CTRL = PORT_PULLUPEN_bm;
+    //PORTC.PIN1CTRL = PORT_PULLUPEN_bm; // RGB Aux
+    //PORTC.PIN2CTRL = PORT_PULLUPEN_bm; // RGB Aux
+    //PORTC.PIN3CTRL = PORT_PULLUPEN_bm; // RGB Aux
 
     // set up the PWM
     // https://ww1.microchip.com/downloads/en/DeviceDoc/ATtiny1614-16-17-DataSheet-DS40002204A.pdf
@@ -132,4 +145,19 @@ inline void hwdef_setup() {
 
 
 #define LAYOUT_DEFINED
+
+
+
+/*  /// 
+
+ */
+
+
+
+/// wurkkos/ts10-rgbaux/hwdef.h
+
+
+
+///   END   
+
 

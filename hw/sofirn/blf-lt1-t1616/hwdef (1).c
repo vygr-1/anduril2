@@ -1,7 +1,10 @@
-// BLF LT1 PWM functions
-// Copyright (C) 2023 Selene ToyKeeper
+// Sofirn LT1-t1616 PWM helpers
+// Copyright (C) 2023 SiteRelEnby, Selene ToyKeeper
 // SPDX-License-Identifier: GPL-3.0-or-later
+
 #pragma once
+
+#include "fsm/chan-aux.c"
 
 
 void set_level_zero();
@@ -10,60 +13,62 @@ void set_level_ch1(uint8_t level);
 void set_level_ch2(uint8_t level);
 void set_level_both(uint8_t level);
 void set_level_blend(uint8_t level);
-//void set_level_auto(uint8_t level);  // redundant
+void set_level_auto(uint8_t level);
 
-#if 0  // gradual adjustments are disabled to save space
 bool gradual_tick_ch1(uint8_t gt);
 bool gradual_tick_ch2(uint8_t gt);
 bool gradual_tick_both(uint8_t gt);
 bool gradual_tick_blend(uint8_t gt);
-//bool gradual_tick_auto(uint8_t gt);  // redundant
-#endif
+bool gradual_tick_auto(uint8_t gt);
 
 
 Channel channels[] = {
     { // channel 1 only
         .set_level    = set_level_ch1,
-        //.gradual_tick = gradual_tick_ch1,
+        .gradual_tick = gradual_tick_ch1,
         .has_args     = 0
     },
     { // channel 2 only
         .set_level    = set_level_ch2,
-        //.gradual_tick = gradual_tick_ch2,
+        .gradual_tick = gradual_tick_ch2,
         .has_args     = 0
     },
     { // both channels, tied together (max "200%" power)
         .set_level    = set_level_both,
-        //.gradual_tick = gradual_tick_both,
+        .gradual_tick = gradual_tick_both,
         .has_args     = 0
     },
     { // both channels, manual blend (max "100%" power)
         .set_level    = set_level_blend,
-        //.gradual_tick = gradual_tick_blend,
+        .gradual_tick = gradual_tick_blend,
         .has_args     = 1
     },
     { // both channels, auto blend
-        .set_level    = set_level_blend,
-        //.gradual_tick = gradual_tick_blend,
+        .set_level    = set_level_auto,
+        .gradual_tick = gradual_tick_auto,
         .has_args     = 1
     },
+    AUX_CHANNELS
 };
 
+
 void set_level_zero() {
-    // disable timer 0 overflow interrupt
+    // disable timer overflow interrupt
     // (helps improve button press handling from Off state)
-    DSM_INTCTRL &= ~DSM_OVF_bm;
+    DSM_INTCTRL = 0;
 
     // turn off all LEDs
     ch1_dsm_lvl = 0;
     ch2_dsm_lvl = 0;
     CH1_PWM     = 0;
     CH2_PWM     = 0;
+    PWM_CNT     = 0;
 }
 
-// wrap setting the dsm vars, to get a faster response
-// (just setting *_dsm_lvl doesn't work well for strobes)
 void set_hw_levels(PWM_DATATYPE ch1, PWM_DATATYPE ch2) {
+
+    bool was_on = (CH1_PWM>0) || (CH2_PWM>0);
+
     // set delta-sigma soft levels
     ch1_dsm_lvl = ch1;
     ch2_dsm_lvl = ch2;
@@ -73,7 +78,11 @@ void set_hw_levels(PWM_DATATYPE ch1, PWM_DATATYPE ch2) {
     CH2_PWM = ch2_pwm = ch2 >> 7;
 
     // enable timer overflow interrupt so DSM can work
-    DSM_INTCTRL |= DSM_OVF_bm;
+    DSM_INTCTRL = DSM_OVF_bm;
+
+    // reset phase when turning on
+    if (! was_on) PWM_CNT = 0;
+
 }
 
 // delta-sigma modulation of PWM outputs
@@ -99,6 +108,10 @@ ISR(DSM_vect) {
     ch2_dsm += (ch2_dsm_lvl & 0x007f);
     ch2_pwm  = (ch2_dsm_lvl >> 7) + (ch2_dsm > 0x7f);
     ch2_dsm &= 0x7f;
+
+    // clear the interrupt flag to indicate it was handled
+    // as per: https://onlinedocs.microchip.com/pr/GUID-C37FFBA8-82C6-4339-A2B1-ABD9A0F6C162-en-US-8/index.html?GUID-C2A2BEFD-158F-413D-B9D4-0F0556AA79BD
+    DSM_INTFLAGS = DSM_OVF_bm;
 }
 
 
@@ -135,18 +148,15 @@ void set_level_blend(uint8_t level) {
     set_hw_levels(warm, cool);
 }
 
-/*
 void set_level_auto(uint8_t level) {
     PWM_DATATYPE warm, cool;
     blend_helper(&warm, &cool, level);
     set_hw_levels(warm, cool);
 }
-*/
 
 ///// "gradual tick" functions for smooth thermal regulation /////
 // (and other smooth adjustments)
 
-#if 0  // disabled to save space
 ///// bump each channel toward a target value /////
 bool gradual_adjust(PWM_DATATYPE ch1, PWM_DATATYPE ch2) {
     // adjust multiple times based on current brightness
@@ -192,13 +202,10 @@ bool gradual_tick_blend(uint8_t gt) {
     return gradual_adjust(warm, cool);
 }
 
-/*
 bool gradual_tick_auto(uint8_t gt) {
     PWM_DATATYPE warm, cool;
     blend_helper(&warm, &cool, gt);
     return gradual_adjust(warm, cool);
 }
-*/
 
-#endif  // if 0
 

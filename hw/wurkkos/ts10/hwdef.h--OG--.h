@@ -13,11 +13,7 @@
  * Voltage:    VCC
  */
 
-
-
 #define HWDEF_C  wurkkos/ts10/hwdef.c
-
-
 
 // allow using aux LEDs as extra channel modes
 #include "fsm/chan-aux.h"

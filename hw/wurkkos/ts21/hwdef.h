@@ -1,37 +1,74 @@
-// Wurkkos TS10 driver layout
+/// wurkkos/ts21/hwdef.h
+/// a copy of sofirn/blf-q8-t1616/hwdef.h 
+/// for The TS21 (T1616). with a few little mods/edits
+
+
+// BLF Q8 driver layout using the Attiny1616
 // Copyright (C) 2021-2023 gchart, Selene ToyKeeper
 // SPDX-License-Identifier: GPL-3.0-or-later
+
+
 #pragma once
 
-/*
- * (based on BLF Q8-t1616 driver layout)
+
+/*  /// 
+
+ */
+
+
+/*  /// Driver layout
+
+/// TS21 driver layout 
+/// SC31 Pro driver layout 
+/// SP36 driver layout 
+/// BLF Q8 driver layout 
+
+ * 
+ * (based on Wurkkos TS10 driver layout,
+ *  which in turn was based on an older version of this BLF-Q8-t1616 driver)
+ * (should probably merge the two files at some point)
  * Driver pinout:
  * eSwitch:    PA5
  * Aux LED:    PB5
  * PWM FET:    PB0 (TCA0 WO0)
  * PWM 1x7135: PB1 (TCA0 WO1)
  * Voltage:    VCC
- */
 
 
-
+// nearly all t1616-based FET+1 drivers work pretty much the same
+// (this one has single-color aux like the TS10)
 #define HWDEF_C  wurkkos/ts10/hwdef.c
 
 
+/// TS21 has single-color aux like the SC31 Pro
 
+ */
+#define HWDEF_C  wurkkos/ts21/hwdef.c
+
+
+/*  /// "fsm/chan-aux.h"
 // allow using aux LEDs as extra channel modes
+ */
 #include "fsm/chan-aux.h"
+
+
+/*  /// Channel modes
 
 // channel modes:
 // * 0. FET+7135 stacked
 // * 1. aux LEDs
+
+ */
 #define NUM_CHANNEL_MODES  2
+
 enum CHANNEL_MODES {
     CM_MAIN = 0,
     CM_AUX
 };
 
+
 #define DEFAULT_CHANNEL_MODE  CM_MAIN
+
 
 // right-most bit first, modes are in fedcba9876543210 order
 #define CHANNEL_MODES_ENABLED 0b00000001
@@ -39,12 +76,19 @@ enum CHANNEL_MODES {
 
 #define PWM_CHANNELS 2  // old, remove this
 
+
 #define PWM_BITS      16        // dynamic 16-bit, but never goes over 255
+
 #define PWM_GET       PWM_GET8
+
 #define PWM_DATATYPE  uint16_t  // is used for PWM_TOPS (which goes way over 255)
+
 #define PWM_DATATYPE2 uint16_t  // only needs 32-bit if ramp values go over 255
+
 #define PWM1_DATATYPE uint8_t   // 1x7135 ramp
+
 #define PWM2_DATATYPE uint8_t   // DD FET ramp
+
 
 // PWM parameters of both channels are tied together because they share a counter
 #define PWM_TOP TCA0.SINGLE.PERBUF   // holds the TOP value for for variable-resolution PWM
@@ -52,13 +96,16 @@ enum CHANNEL_MODES {
 // not necessary when double-buffered "BUF" registers are used
 #define PWM_CNT TCA0.SINGLE.CNT   // for resetting phase after each TOP adjustment
 
+
 // 1x7135 channel
 #define CH1_PIN  PB1
 #define CH1_PWM  TCA0.SINGLE.CMP1BUF  // CMP1 is the output compare register for PB1
 
+
 // DD FET channel
 #define CH2_PIN  PB0
 #define CH2_PWM  TCA0.SINGLE.CMP0BUF  // CMP0 is the output compare register for PB0
+
 
 // e-switch
 #define SWITCH_PIN      PIN5_bp
@@ -67,14 +114,17 @@ enum CHANNEL_MODES {
 #define SWITCH_VECT     PORTA_PORT_vect
 #define SWITCH_INTFLG   VPORTA.INTFLAGS
 
+
 // average drop across diode on this hardware
 #ifndef VOLTAGE_FUDGE_FACTOR
 #define VOLTAGE_FUDGE_FACTOR 7  // add 0.35V
 #endif
 
-// front-facing aux LEDs
-#define AUXLED_PIN  PIN5_bp
-#define AUXLED_PORT PORTB
+
+// lighted button
+#define AUXLED_PIN   PIN5_bp
+#define AUXLED_PORT  PORTB
+
 
 
 inline void hwdef_setup() {
@@ -131,5 +181,11 @@ inline void hwdef_setup() {
 }
 
 
+
 #define LAYOUT_DEFINED
+
+
+
+///   END   
+
 

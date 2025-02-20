@@ -1,64 +1,87 @@
-// Wurkkos TS10 driver layout
-// Copyright (C) 2021-2023 gchart, Selene ToyKeeper
+// BLF LT1 driver layout using the Attiny1616
+// Copyright (C) 2021-2023 (gchart), Selene ToyKeeper
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
 /*
- * (based on BLF Q8-t1616 driver layout)
  * Driver pinout:
  * eSwitch:    PA5
  * Aux LED:    PB5
- * PWM FET:    PB0 (TCA0 WO0)
- * PWM 1x7135: PB1 (TCA0 WO1)
+ * PWM cool:   PB0 (TCA0 WO0)
+ * PWM warm:   PB1 (TCA0 WO1)
  * Voltage:    VCC
  */
 
-
-
-#define HWDEF_C  wurkkos/ts10/hwdef.c
-
-
+#define HWDEF_C  sofirn/blf-lt1-t1616/hwdef.c
 
 // allow using aux LEDs as extra channel modes
 #include "fsm/chan-aux.h"
 
 // channel modes:
-// * 0. FET+7135 stacked
-// * 1. aux LEDs
-#define NUM_CHANNEL_MODES  2
-enum CHANNEL_MODES {
-    CM_MAIN = 0,
+// * 0. warm only
+// * 1. cool only
+// * 2. both channels, tied together, max "200%" power
+// * 3. both channels, manual blend, max "100%" power
+// * 4. both channels, auto blend, reversible
+#define NUM_CHANNEL_MODES  6
+enum channel_modes_e {
+    CM_CH1 = 0,
+    CM_CH2,
+    CM_BOTH,
+    CM_BLEND,
+    CM_AUTO,
     CM_AUX
 };
 
-#define DEFAULT_CHANNEL_MODE  CM_MAIN
-
 // right-most bit first, modes are in fedcba9876543210 order
-#define CHANNEL_MODES_ENABLED 0b00000001
+#define CHANNEL_MODES_ENABLED 0b00011000
+#define USE_CHANNEL_MODE_ARGS
+// _, _, _, 128=middle CCT, 0=warm-to-cool
+#define CHANNEL_MODE_ARGS     0,0,0,128,0,0
+
+// can use some of the common handlers
+#define USE_CALC_2CH_BLEND
 
 
-#define PWM_CHANNELS 2  // old, remove this
+#define PWM_CHANNELS  1  // old, remove this
 
-#define PWM_BITS      16        // dynamic 16-bit, but never goes over 255
-#define PWM_GET       PWM_GET8
-#define PWM_DATATYPE  uint16_t  // is used for PWM_TOPS (which goes way over 255)
-#define PWM_DATATYPE2 uint16_t  // only needs 32-bit if ramp values go over 255
-#define PWM1_DATATYPE uint8_t   // 1x7135 ramp
-#define PWM2_DATATYPE uint8_t   // DD FET ramp
+#define PWM_BITS      16     // 0 to 32640 (0 to 255 PWM + 0 to 127 DSM) at constant kHz
+#define PWM_GET       PWM_GET16
+#define PWM_DATATYPE  uint16_t
+#define PWM_DATATYPE2 uint32_t  // only needs 32-bit if ramp values go over 255
+#define PWM1_DATATYPE uint16_t  // 15-bit PWM+DSM ramp
 
 // PWM parameters of both channels are tied together because they share a counter
-#define PWM_TOP TCA0.SINGLE.PERBUF   // holds the TOP value for for variable-resolution PWM
-#define PWM_TOP_INIT  255    // highest value used in top half of ramp
-// not necessary when double-buffered "BUF" registers are used
-#define PWM_CNT TCA0.SINGLE.CNT   // for resetting phase after each TOP adjustment
+// dynamic PWM
+#define PWM_TOP  TCA0.SINGLE.PERBUF  // holds the TOP value for for variable-resolution PWM
+#define PWM_TOP_INIT  255
+#define PWM_CNT  TCA0.SINGLE.CNT  // for resetting phase after each TOP adjustment
+// (max is (255 << 7), because it's 8-bit PWM plus 7 bits of DSM)
+#define DSM_TOP       (255<<7) // 15-bit resolution leaves 1 bit for carry
 
-// 1x7135 channel
+// timer interrupt for DSM
+#define DSM_vect     TCA0_OVF_vect
+#define DSM_INTCTRL  TCA0.SINGLE.INTCTRL
+#define DSM_INTFLAGS TCA0.SINGLE.INTFLAGS
+#define DSM_OVF_bm   TCA_SINGLE_OVF_bm
+
+#define DELAY_FACTOR 90  // less time in delay() because more time spent in interrupts
+
+// warm LEDs
+uint16_t ch1_dsm_lvl;
+uint8_t ch1_pwm, ch1_dsm;
 #define CH1_PIN  PB1
 #define CH1_PWM  TCA0.SINGLE.CMP1BUF  // CMP1 is the output compare register for PB1
 
-// DD FET channel
+// cold LEDs
+uint16_t ch2_dsm_lvl;
+uint8_t ch2_pwm, ch2_dsm;
 #define CH2_PIN  PB0
 #define CH2_PWM  TCA0.SINGLE.CMP0BUF  // CMP0 is the output compare register for PB0
+
+// lighted button
+#define AUXLED_PIN   PIN5_bp
+#define AUXLED_PORT  PORTB
 
 // e-switch
 #define SWITCH_PIN      PIN5_bp
@@ -72,10 +95,6 @@ enum CHANNEL_MODES {
 #define VOLTAGE_FUDGE_FACTOR 7  // add 0.35V
 #endif
 
-// front-facing aux LEDs
-#define AUXLED_PIN  PIN5_bp
-#define AUXLED_PORT PORTB
-
 
 inline void hwdef_setup() {
 
@@ -85,9 +104,10 @@ inline void hwdef_setup() {
 
     //VPORTA.DIR = ...;
     // Outputs
-    VPORTB.DIR = PIN0_bm   // DD FET
-               | PIN1_bm   // 7135
-               | PIN5_bm;  // Aux LED
+    VPORTB.DIR = PIN0_bm   // cool white
+               | PIN1_bm   // warm white
+    //           | PIN2_bm   // for testing on LT1S Pro, disable red channel
+               | PIN5_bm;  // aux LED
     //VPORTC.DIR = ...;
 
     // enable pullups on the unused pins to reduce power
@@ -100,9 +120,9 @@ inline void hwdef_setup() {
     PORTA.PIN6CTRL = PORT_PULLUPEN_bm;
     PORTA.PIN7CTRL = PORT_PULLUPEN_bm;
 
-    //PORTB.PIN0CTRL = PORT_PULLUPEN_bm; // FET channel
-    //PORTB.PIN1CTRL = PORT_PULLUPEN_bm; // 7135 channel
-    PORTB.PIN2CTRL = PORT_PULLUPEN_bm;
+    //PORTB.PIN0CTRL = PORT_PULLUPEN_bm; // cold tint channel
+    //PORTB.PIN1CTRL = PORT_PULLUPEN_bm; // warm tint channel
+    PORTB.PIN2CTRL = PORT_PULLUPEN_bm; // comment out for testing on LT1S Pro
     PORTB.PIN3CTRL = PORT_PULLUPEN_bm;
     PORTB.PIN4CTRL = PORT_PULLUPEN_bm;
     //PORTB.PIN5CTRL = PORT_PULLUPEN_bm; // Aux LED
@@ -116,10 +136,9 @@ inline void hwdef_setup() {
     // https://ww1.microchip.com/downloads/en/DeviceDoc/ATtiny1614-16-17-DataSheet-DS40002204A.pdf
     // PB0 is TCA0:WO0, use TCA_SINGLE_CMP0EN_bm
     // PB1 is TCA0:WO1, use TCA_SINGLE_CMP1EN_bm
-    // PB2 is TCA0:WO2, use TCA_SINGLE_CMP2EN_bm
     // For Fast (Single Slope) PWM use TCA_SINGLE_WGMODE_SINGLESLOPE_gc
     // For Phase Correct (Dual Slope) PWM use TCA_SINGLE_WGMODE_DSBOTTOM_gc
-    // See the manual for other pins, clocks, configs, portmux, etc
+    // TODO: add references to MCU documentation
     TCA0.SINGLE.CTRLB = TCA_SINGLE_CMP0EN_bm
                       | TCA_SINGLE_CMP1EN_bm
                       | TCA_SINGLE_WGMODE_DSBOTTOM_gc;
@@ -127,6 +146,10 @@ inline void hwdef_setup() {
                       | TCA_SINGLE_ENABLE_bm;
 
     PWM_TOP = PWM_TOP_INIT;
+
+    // set up interrupt for delta-sigma modulation
+    // (moved to hwdef.c functions so it can be enabled/disabled based on ramp level)
+    //DSM_INTCTRL |= DSM_OVF_bm;  // interrupt once for each timer cycle
 
 }
 

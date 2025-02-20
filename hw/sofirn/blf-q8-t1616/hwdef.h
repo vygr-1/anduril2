@@ -1,6 +1,7 @@
 // BLF Q8 driver layout using the Attiny1616
 // Copyright (C) 2021-2023 gchart, Selene ToyKeeper
 // SPDX-License-Identifier: GPL-3.0-or-later
+
 #pragma once
 
 /*
@@ -17,7 +18,8 @@
 
 // nearly all t1616-based FET+1 drivers work pretty much the same
 // (this one has single-color aux like the TS10)
-#define HWDEF_C  wurkkos/ts10/hwdef.c
+///  #define HWDEF_C  wurkkos/ts10/hwdef.c
+#define HWDEF_C  sofirn/blf-q8-t1616/hwdef.c
 
 // allow using aux LEDs as extra channel modes
 #include "fsm/chan-aux.h"

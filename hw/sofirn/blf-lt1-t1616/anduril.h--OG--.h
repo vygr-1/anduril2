@@ -1,79 +1,17 @@
-/// "sofirn/blf-lt1-t1616/anduril.h"
-
 // BLF Lantern config options for Anduril using the Attiny1616
 // Copyright (C) 2021-2023 (original author TBD), Selene ToyKeeper
 // SPDX-License-Identifier: GPL-3.0-or-later
-
-
 #pragma once
-
 
 #include "sofirn/blf-lt1-t1616/hwdef.h"
 
-
-#include "sofirn/anduril.h"
-
-
-///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
-
-
-/*
-///   the button lights up
-///      #define USE_INDICATOR_LED
-///   the button is visible while main LEDs are on
-///      #define USE_INDICATOR_LED_WHILE_RAMPING
-///   off mode: low (1)
-///   lockout: blinking (3)
-///      #define INDICATOR_LED_DEFAULT_MODE ((3<<2) + 1)
- */
-
-/*
-///  moved this mod here from  "sofirn/anduril.h", 
-///  applied and adjusted for each flashlight 
-
-///  from "aux-leds.h" : . . . "USE_INDICATOR_LED" , 
-///  "USE_INDICATOR_LED_WHILE_RAMPING" , "INDICATOR_LED_DEFAULT_MODE" . . . 
-
-///  "USE_INDICATOR_LED" : The button lights up
-///  "USE_INDICATOR_LED_WHILE_RAMPING" : button LED is ON while main LED is ON 
- */
+// the button lights up
 #define USE_INDICATOR_LED
+// the button is visible while main LEDs are on
 #define USE_INDICATOR_LED_WHILE_RAMPING
-
-
-/*
-///   NEW MOD. more-aux-patterns by SammysHP
-///   using replacement files from SammysHP : 
-///   "anduril/aux-leds.c"  and  "anduril/aux-leds.h" ,
-///   also  "anduril/off-mode.c" 
-///   and  "anduril/lockout-mode.c" ! 
- */
-#define USE_EXTENDED_INDICATOR_PATTERNS
-
-
-/*
-///  aux LED patterns : 
-    // low nibble:  off state
-    // high nibble: lockout state
-    // modes are:
-    //   0=off
-    //   1=low
-    //   2=high
-    //   3=fancy blinking
-    //   4=low blinking
-    //   5=high blinking 
-///  my default for SC31 PRO T1616 : 
- */
-///   LOCKOUT  :   low (1) 
-///   OFF MODE :   low blinking (4) 
-#undef INDICATOR_LED_DEFAULT_MODE
-#define INDICATOR_LED_DEFAULT_MODE ((1<<INDICATOR_LED_CFG_OFFSET) + 4)
-
-
-
-///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
-
-
+// off mode: low (1)
+// lockout: blinking (3)
+#define INDICATOR_LED_DEFAULT_MODE ((3<<2) + 1)
 
 // channel modes...
 // CM_CH1, CM_CH2, CM_BOTH, CM_BLEND, CM_AUTO
@@ -122,26 +60,17 @@
 #define SIMPLE_UI_CEIL   150
 #define SIMPLE_UI_STEPS  5
 
-
-
-///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
-
-
-
 // Allow 3C (or 6C) in Simple UI (toggle smooth or stepped ramping)
 #define USE_SIMPLE_UI_RAMPING_TOGGLE
 
 // allow Aux Config and Strobe Modes in Simple UI
 #define USE_EXTENDED_SIMPLE_UI
 
-
-
-
+#define USE_SOS_MODE
+#define USE_SOS_MODE_IN_BLINKY_GROUP
 
 // the default of 26 looks a bit flat, so increase it
 #define CANDLE_AMPLITUDE 40
-
-
 
 #define USE_POLICE_COLOR_STROBE_MODE
 #define POLICE_COLOR_STROBE_CH1        CM_CH1
@@ -150,10 +79,8 @@
 //#define POLICE_COLOR_STROBE_CH1        CM_AUXRED
 //#define POLICE_COLOR_STROBE_CH2        CM_AUXBLU
 
-
-
-
-
+#undef  TACTICAL_LEVELS
+#define TACTICAL_LEVELS 120,30,(RAMP_SIZE+3)  // high, low, police strobe
 
 // party strobe, tac strobe, police, lightning, candle, bike
 #define DEFAULT_STROBE_CHANNELS  CM_BOTH,CM_BOTH,CM_BOTH,CM_AUTO,CM_AUTO,CM_AUTO
@@ -176,72 +103,6 @@
 #define BLINK_AT_RAMP_CEIL
 #endif
 
-
-
-///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
-
-
-
-/*
- *  DISABLE SOME BLINKIES ? 
-#undef USE_BEACON_MODE 
- */
-#undef USE_SOS_MODE
-
-
-/*
- *  DISABLE SOME STROBES ? 
-#undef USE_BIKE_FLASHER_MODE
-#undef USE_PARTY_STROBE_MODE
-#undef USE_TACTICAL_STROBE_MODE
-#undef USE_FIREWORK_MODE
-
-#undef USE_LIGHTHOUSE_MODE
-#undef USE_CANDLE_MODE
-
- */
-
-#undef USE_LIGHTNING_MODE
-#undef USE_BAD_FLUORESCENT_MODE
-
-
-
-
-
-
-/*
-///   from  old  "cfg-0631-sp10p-071.h"  
-///   TACTICAL MODE LEVELS 
-///   3 slots  :    1H  ,      2H         ,  3H
-///   3 items  :  TURBO , TACTICAL STROBE , PARTY 
-///      150 = turbo
-///      (RAMP_SIZE+1) = party strobe?
-///      (RAMP_SIZE+2) = tactical strobe
-///      (RAMP_SIZE+3) = bike flasher  
-/// #define TACTICAL_LEVELS 150,(RAMP_SIZE+2),(RAMP_SIZE+1)
- */
-#define TACTICAL_LEVELS 130,(RAMP_SIZE+2),(RAMP_SIZE+3)
-
-
-
-
-
-
-/*
- */
-
-
-
-
-
-
-///   ///   ///   ///   ///   ///   ///   ///   ///   ///   ///   
-
-
-
-
-
-
-///   END   
-
+// for consistency with other models
+#define USE_SOFT_FACTORY_RESET
 

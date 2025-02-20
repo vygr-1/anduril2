@@ -1,7 +1,16 @@
+/// "sofirn/sc21-pro/hwdef.h"
+
+/// Sofirn SC21 Pro
+
 // Wurkkos TS10 driver layout
 // Copyright (C) 2021-2023 gchart, Selene ToyKeeper
 // SPDX-License-Identifier: GPL-3.0-or-later
+
+
+
 #pragma once
+
+
 
 /*
  * (based on BLF Q8-t1616 driver layout)
@@ -15,7 +24,8 @@
 
 
 
-#define HWDEF_C  wurkkos/ts10/hwdef.c
+/// #define HWDEF_C  wurkkos/ts10/hwdef.c
+#define HWDEF_C  sofirn/sc21-pro/hwdef.c
 
 
 
