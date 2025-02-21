@@ -1,3 +1,4 @@
+# OG ToyKeeper anduril:   
 .build/
 .env/
 .venv/
@@ -19,6 +20,50 @@ venv/
 *.old
 *.otl
 
-# 2025-02-19, more items: 
+
+
+###   ###   ###   ###   ###   
+
+
+
+# additional:   
+.build-anduril/
+anduril-mods/
+anduril-mod/
 AVRDUDE-v8.0/
+*AVRDUDE*
+bin-mods/
+bin-mod/
+dfp/
+hw-mods/
+hw-mod/
+*--/
+
+*--OG--*
+*--
+
 *.ps1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
