@@ -7,23 +7,38 @@ Create README02.md
 
 README02.md  
 
-This is a secondary README file, contains info on the mods of this specific branch, a2-105.  
-There's some chaos, I'm still learning/playing with this Git, GitHub, GitHub Desktop, puppygit thingy ...  
+.   
+.   
+.   
+
+README--a2-135.md  
+---
+
+
+This is a secondary README file, contains info on the mods of this specific branch, a2-135.  
+
+Please bear in mind, I'm still learning/playing with this Git, GitHub, GitHub Desktop, PuppyGit thingy ...   
+
+If you try to compile from this source, it may not work as intended, or it may NOT work at all. 
+
 
 .   
 .   
 .   
 
-Edit README--a2-105.md  
+Edit README--a2-135.md  
 ---
 
 2025-02-19   
 
 OK, let's get it going...   
-This specific branch is anduril2 with some mods.  
-a2-105, not as heavy-mods as the a2-325?   
 
-Heavy It may be, but it has the same file structure as the OG [ToyKeeper Anduril2](https://github.com/ToyKeeper/anduril). 
+This specific branch is anduril2 with some mods.  
+
+
+Heavy mods, maybe.   
+But it has the same file structure as   
+The OG [ToyKeeper Anduril2](https://github.com/ToyKeeper/anduril). 
 
 .   
 .   
@@ -33,7 +48,13 @@ Heavy It may be, but it has the same file structure as the OG [ToyKeeper Anduril
 
 accessing through Git GUI on Desktop
 
+.   
 
+Checks 
+
+2025-02-22 07.09.28
+
+2025-02-22 07.10.57
 
 
 .   
