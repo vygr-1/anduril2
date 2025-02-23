@@ -6,7 +6,9 @@
 # THIS IS A BONE STOCK ANDURIL2 BRANCH
 
 
-I have no mod here. It's just a copy of the original Anduril that it's forked from,  
+I have no mod here. 
+
+It's just a copy of the original Anduril that it's forked from,  
 [ToyKeeper Anduril](https://github.com/ToyKeeper/anduril) 
 
 
@@ -49,9 +51,19 @@ I'm still learning this Git, GitHub Desktop, Git GUI, GitKraken, PuppyGit, GitHu
 .   
 .   
 
+
+## Edits 
+
+
 2025-02-23
 
 OK, let's get it going...   
+
+
+
+Renamed to   
+README--A2-121.md   
+
 
 Well, this specific branch is anduril2 with no mod.  
 Bone stock for now.   
@@ -70,7 +82,7 @@ Bone stock for now.
 # CUSTOM FEATURES   
 
 
-TBD. 
+TBD.   
 None. 
 
 
