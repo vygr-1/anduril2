@@ -40,6 +40,36 @@ Heavy mods, maybe.
 But it has the same file structure as   
 The OG [ToyKeeper Anduril2](https://github.com/ToyKeeper/anduril). 
 
+
+For comparison, the other branches, a-325, has different file structure.
+
+I don't know anything else other than anduril/ in the ui/ directory.
+I moved anduril/ directory up to the source root and deleted everything else inside ui/, and deleted the ui/ directory.
+
+I moved dfp/ dir up from arch/ dir, up to the repo(source) root.
+
+The hw/ dir structure is also different. I moved buil-target directories up one level from the "vendor", to the root of hw/. So, it's hw/  --> ts10/ , ts11/ , ts21/ , etc. Kind of bypassing the wurkkos/ directory.
+
+I had to make a lot of changes in some files to make it work.
+It became a simpler structure.
+I learned a lot in doing that project.
+But, I think moving forward I'm gonna stick to the standard structure.
+
+I cloned/copied/moved 
+a2-325 to another repo and deleted from this anduril2 repo.
+That other repo is vygr-1/a2mods. 
+
+I use PuppyGit on my android phone.
+I tried GitHub Desktop and Git GUI on my laptop but then settled with GitKraken. I prefer GitKraken. I haven't tried SourceTree yet. Maybe I'll try it sometime soon, maybe not. 
+I really like GitKraken.
+
+PuppyGit is the only git gui client available for android. It's good. I'd like try something else but there's none. 
+
+I learned from the list of GUI Clients on the git website.
+[GUI Clients](https://git-scm.com/downloads/guis).
+
+
+
 .   
 .   
 .   
