@@ -10,7 +10,7 @@ README02.md.
 
 This is a secondary README file, contains info on the mods of this specific branch.   
 
-I'm still learning/playing with this Git, GitHub Desktop, puppygit, GitHub thingy ...  
+I'm still learning this Git, GitHub Desktop, puppygit, GitHub thingy ...  
 
 .   
 .   
