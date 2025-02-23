@@ -6,7 +6,9 @@
 
 https://github.com/ToyKeeper/anduril
 
-https://github.com/vygr-1/anduril2/tree/a2-135/ui/anduril
+https://github.com/vygr-1/anduril2/tree/a2-135
+
+https://github.com/vygr-1/anduril2/tree/a2-135
 
 
 ## Create README02.md
